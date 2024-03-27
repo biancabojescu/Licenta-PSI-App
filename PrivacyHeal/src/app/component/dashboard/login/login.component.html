@@ -6,6 +6,7 @@
       <label for="chk" aria-hidden="true">Login</label>
       <input type="email" name="email" placeholder="Email" required="">
       <input type="password" name="pswd" placeholder="Password" required="">
+      <br>
       <button>Login</button>
     </form>
   </div>
@@ -13,7 +14,9 @@
     <form>
       <label for="chk" aria-hidden="true">Sign up</label>
       <img ngSrc="assets/img/register.png" alt="logo" height="208" width="308">
-      <button>Sign up</button>
+      <span routerLink="../../dashboard/sign-up">
+        <button>Sign up</button>
+      </span>
     </form>
   </div>
 </div>

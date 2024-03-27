@@ -17,11 +17,22 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {MatMenuModule} from "@angular/material/menu";
+import {SignUpComponent} from "./component/dashboard/sign-up/sign-up.component";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatButtonModule} from "@angular/material/button";
+import {MatListModule} from "@angular/material/list";
+import {MatIconModule} from "@angular/material/icon";
+import {AsyncPipe, NgOptimizedImage} from "@angular/common";
+import {MatSidenavModule} from "@angular/material/sidenav";
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SidebarComponent,
+    LoginComponent,
+    HomeComponent,
+    SignUpComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,14 +41,18 @@ import {MatMenuModule} from "@angular/material/menu";
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     MaterialModule,
-    SidebarComponent,
-    LoginComponent,
-    HomeComponent,
     MatInputModule,
     ReactiveFormsModule,
     FormsModule,
     MatMenuModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatListModule,
+    MatIconModule,
+    AsyncPipe,
+    NgOptimizedImage,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,10 +8,9 @@ body{
 .main{
   width: 350px;
   height: 500px;
-  background: #121b2c;
   overflow: hidden;
   background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 5px 20px 50px #000;
 }
 #chk{
@@ -23,7 +22,7 @@ body{
   height: 100%;
 }
 label{
-  color: #fff;
+  color: #ede7ff;
   font-size: 2.3em;
   justify-content: center;
   display: flex;
@@ -33,9 +32,9 @@ label{
   transition: .5s ease-in-out;
 }
 input{
-  width: 60%;
-  height: 20px;
-  background: #e0dede;
+  height: 40px;
+  width: 70%;
+  background: #ede7ff;
   justify-content: center;
   display: flex;
   margin: 20px auto;
@@ -51,7 +50,7 @@ button{
   display: block;
   color: #fff;
   background: #5b38be;
-  font-size: 1em;
+  font-size: 16px;
   font-weight: bold;
   margin: 20px auto 10px;
   outline: none;
