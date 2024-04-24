@@ -5,7 +5,6 @@
     <title>HireSafe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/login.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -24,24 +23,6 @@
     </nav>
     </header>
 
-    <div class="main">
-  <input type="checkbox" id="chk" aria-hidden="true">
-  <div class="login">
-    <form>
-      <label for="chk" aria-hidden="true">Login</label>
-      <input type="email" name="email" placeholder="Email" required="">
-      <input type="password" name="pswd" placeholder="Password" required="">
-      <br>
-      <button>Login</button>
-    </form>
-  </div>
-  <div class="signup">
-    <form>
-    <label for="chk" aria-hidden="true">Sign up</label>
-    <img src="../static/images/register.png" alt="logo" height="208" width="308">
-    <a href="{{ url_for('register') }}" class="register-btn">Register</a>
-    </form>
-  </div>
-</div>
+
 </body>
 </html>
