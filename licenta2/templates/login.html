@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HireSafe</title>
+    <title>SecureMind</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
     <link rel="stylesheet" type="text/css" href="../static/css/login.css">
@@ -13,8 +13,8 @@
    <header>
     <div class="logo">
         <a href="{{ url_for('index') }}">
-            <img src="../static/images/logo.png" alt="HireSafe logo">
-            <span class="logo-text">HireSafe</span>
+            <img src="../static/images/logo.png" alt="SecureMind logo">
+            <span class="logo-text">SecureMind</span>
         </a>
     </div>
     <nav>
@@ -27,13 +27,20 @@
     <div class="main">
   <input type="checkbox" id="chk" aria-hidden="true">
   <div class="login">
-    <form>
-      <label for="chk" aria-hidden="true">Login</label>
-      <input type="email" name="email" placeholder="Email" required="">
-      <input type="password" name="pswd" placeholder="Password" required="">
-      <br>
-      <button>Login</button>
+    <form action="{{ url_for('login_user') }}" method="post">
+        <label for="chk" aria-hidden="true">Login</label>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required id="password">
+        <label class="checkbox-label">
+            Show Password
+            <input type="checkbox" onclick="togglePassword()">
+            <span class="slider"></span>
+        </label>
+        <br>
+        <button type="submit">Login</button>
     </form>
+
+
   </div>
   <div class="signup">
     <form>
@@ -43,5 +50,7 @@
     </form>
   </div>
 </div>
+
+<script type="text/javascript" src="../static/javascript/togglePass.js"></script>
 </body>
 </html>
