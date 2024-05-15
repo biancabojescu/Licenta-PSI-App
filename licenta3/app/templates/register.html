@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthShare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/register.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+   <header>
+    <div class="logo">
+        <a href="{{ url_for('index') }}">
+            <img src="../static/images/logo.png" alt="HealthShare logo">
+            <span class="logo-text">HealthShare</span>
+        </a>
+    </div>
+    <nav>
+        <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
+            <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
+            <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
+            {% if session.is_authenticated %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    </header>
+
+    <div class="main">
+        <div class="login">
+            <form action="{{ url_for('register_user') }}" method="post">
+                {{ form.hidden_tag() }}
+                <label for="chk" aria-hidden="true">Register</label>
+                {{ form.first_name(placeholder='First Name', required=True) }}
+                {{ form.last_name(placeholder='Last Name', required=True) }}
+                {{ form.email(placeholder='Email', required=True) }}
+                {{ form.profession() }} <!-- modificat pentru select box -->
+                {{ form.password(placeholder='Password', required=True, id='password') }}
+                {{ form.confirm_password(placeholder='Confirm Password', required=True, id='confirm_password') }}
+                <label class="checkbox-label">
+                    Show Password
+                    <input type="checkbox" onclick="togglePassword('password', 'confirm_password')">
+                    <span class="slider"></span>
+                </label>
+                <br>
+                {{ form.submit(value='Register') }}
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../static/javascript/togglePass.js"></script>
+</body>
+</html>

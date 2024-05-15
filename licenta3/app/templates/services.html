@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthShare - Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/services.css"> <!-- Adăugăm services.css -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+   <header>
+    <div class="logo">
+        <a href="{{ url_for('index') }}">
+            <img src="../static/images/logo.png" alt="HealthShare logo">
+            <span class="logo-text">HealthShare</span>
+        </a>
+    </div>
+    <nav>
+        <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
+            <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
+            <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
+            {% if session.is_authenticated %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    </header>
+
+    <div class="services-container">
+        <div class="card">
+            <img src="../static/images/add.png" alt="Add Patient">
+            <h3>Add Patient</h3>
+            <p>Add new patients to the system easily and efficiently.</p>
+            <a href="{{ url_for('add_patient') }}">Go to Add Patient</a>
+        </div>
+        <div class="card">
+            <img src="../static/images/view.png" alt="View Intersection">
+            <h3>View Intersection</h3>
+            <p>View the common patients between different medical institutions.</p>
+            <a href="{{ url_for('view_intersection') }}">Go to View Intersection</a>
+        </div>
+        <div class="card">
+            <img src="../static/images/manage.png" alt="Manage Patients">
+            <h3>Manage Patients</h3>
+            <p>Manage and update information about patients.</p>
+            <a href="{{ url_for('manage_patients') }}">Go to Manage Patients</a>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../static/javascript/banner.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

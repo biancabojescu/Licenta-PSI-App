@@ -11,7 +11,7 @@ app.secret_key = 'cheiaSecreta08.'
 @app.route('/')
 @app.route('/index')
 def index():
-    conn, cur = db_conn()
+    # conn, cur = db_conn()
     return render_template('index.html', is_authenticated=session.get('is_authenticated', False))
 
 
@@ -70,14 +70,17 @@ def login_user():
             cur.execute("UPDATE users SET is_auth = TRUE WHERE id = %s", (user_id,))
             conn.commit()
 
+            cur.close()
+            conn.close()
             return redirect(url_for('index'))
         else:
+            cur.close()
+            conn.close()
             return "Parola incorecta!", 403
     else:
+        cur.close()
+        conn.close()
         return "Utilizatorul nu exista!", 404
-
-    cur.close()
-    conn.close()
 
 
 @app.route('/logout')

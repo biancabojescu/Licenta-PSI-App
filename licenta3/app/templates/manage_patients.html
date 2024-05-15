@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthShare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+   <header>
+    <div class="logo">
+        <a href="{{ url_for('index') }}">
+            <img src="../static/images/logo.png" alt="HealthShare logo">
+            <span class="logo-text">HealthShare</span>
+        </a>
+    </div>
+    <nav>
+        <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
+            <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
+            <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
+            {% if session.is_authenticated %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    </header>
+</body>
+</html>
