@@ -44,16 +44,21 @@
         </div>
     </div>
     <br>
+   <div style="text-align:center">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
 
    <section class="intro-section">
     <div class="container">
         <h1>Welcome to HealthShare</h1>
         <p>HealthShare is an innovative platform that facilitates secure and efficient exchange of medical information between various institutions and professionals in the healthcare field. With the help of HealthShare, medical institutions can collaborate in real-time to provide quality and coordinated medical care for patients. </p>
         {% if session.is_authenticated %}
-            <p>Access more information!</p>
+            <h2>Access more information!</h2>
             <a href="{{ url_for('services') }}" class="login-button">Access Services</a>
         {% else %}
-            <p>To access more information, please log in!</p>
+            <h2>To access more information, please log in!</h2>
             <a href="{{ url_for('login') }}" class="login-button">Login</a>
         {% endif %}
     </div>

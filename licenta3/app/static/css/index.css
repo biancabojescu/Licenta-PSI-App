@@ -1,4 +1,7 @@
- * {box-sizing:border-box}
+* {
+  box-sizing: border-box;
+}
+
 .slideshow-container {
   max-width: 100%;
   height: auto;
@@ -10,6 +13,11 @@
 /* Slides */
 .mySlides {
   display: none;
+}
+
+.mySlides img {
+  width: 100%;
+  height: auto; /* Asigură-te că imaginile își păstrează proporțiile */
 }
 
 /* Next & Previous Buttons */
@@ -36,6 +44,7 @@
 .prev:hover, .next:hover {
   background-color: rgba(0,0,0,0.8);
 }
+
 .text {
   color: #f2f2f2;
   font-size: 15px;
@@ -45,7 +54,6 @@
   width: 100%;
   text-align: center;
 }
-
 
 .numbertext {
   color: #f2f2f2;
@@ -59,8 +67,9 @@
   animation-name: fade;
   animation-duration: 1.5s;
 }
+
 a, a:visited, a:hover, a:active {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 @keyframes fade {
@@ -68,46 +77,48 @@ a, a:visited, a:hover, a:active {
   to { opacity: 1; }
 }
 
-
 /* Responsive Styles */
 @media screen and (max-width: 768px) {
   .mySlides img {
-    width: 80%;
+    width: 100%; /* Asigură-te că imaginile sunt responsive */
   }
 }
 
- /* Stiluri pentru secțiunea de introducere */
+/* Stiluri pentru secțiunea de introducere */
 .intro-section {
-    padding: 50px 20px;
-    text-align: center;
-    background: #ffffff;
-    color: #333;
+  padding: 50px 20px;
+  text-align: center;
+  background: #ffffff;
+  color: #333;
 }
 
 .intro-section h1 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  color: #5b38be;
+}
+h2{
     color: #5b38be;
 }
 
 .intro-section p {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
 .login-button {
-    display: inline-block;
-    margin: 20px auto;
-    padding: 15px 30px;
-    background: #5b38be;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 1.2em;
-    transition: background 0.3s;
-    text-align: center;
+  display: inline-block;
+  margin: 20px auto;
+  padding: 15px 30px;
+  background: #5b38be;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2em;
+  transition: background 0.3s;
+  text-align: center;
 }
 
 .login-button:hover {
-    background: #271759;
+  background: #271759;
 }
