@@ -7,8 +7,8 @@ body {
 }
 
 .main {
-  width: 600px;
-  height: 700px;
+  width: 700px;
+  height: 800px;
   overflow: hidden;
   background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/cover;
   border-radius: 5px;
@@ -73,16 +73,15 @@ button:hover {
   display: block;
   position: relative;
   justify-content: center;
-  padding-left: 130px;
+  padding-left: 157px;
   margin: 10px auto;
   cursor: pointer;
   font-size: 16px;
   line-height: 20px;
-  color: #ede7ff; /* Culoare text pentru a se potrivi cu tema */
+  color: #ede7ff;
   user-select: none;
 }
 
-/* Ascunde checkbox-ul original */
 .checkbox-label input {
   position: absolute;
   justify-content: center;
@@ -96,7 +95,7 @@ button:hover {
 .slider {
   position: absolute;
   top: 0;
-  left: 85px;
+  left: 115px;
   height: 20px;
   width: 34px;
   background-color: #ccc;

@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, session, flash
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.models import User, Institutie
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import abort
 
@@ -19,7 +19,12 @@ def login():
 
 @app.route('/register', methods=['GET'])
 def register():
+    institutii = Institutie.query.all()
+    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
+
     form = RegistrationForm()
+    form.hospital.choices = hospital_choices
+
     return render_template('register.html', title='Register', form=form)
 
 
@@ -56,8 +61,16 @@ def login_user():
 @app.route('/register_user', methods=['POST'])
 def register_user():
     form = RegistrationForm()
+    institutii = Institutie.query.all()
+    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
+    form.hospital.choices = hospital_choices
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
+
+        if not institutie:
+            flash('Selected hospital does not exist. Please choose a valid hospital.', 'error')
+            return redirect(url_for('register'))
         user = User(
             nume=form.first_name.data,
             prenume=form.last_name.data,
@@ -65,7 +78,8 @@ def register_user():
             profesie=form.profession.data,
             parola=hashed_password,
             is_auth=False,
-            role='user'
+            role='user',
+            id_institutie = institutie.id
         )
         db.session.add(user)
         db.session.commit()
