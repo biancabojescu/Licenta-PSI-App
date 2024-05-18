@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, text
 from sqlalchemy.orm import relationship
+from werkzeug.security import check_password_hash
 from app import db
+
 
 class Institutie(db.Model):
     __tablename__ = 'institutii'
@@ -29,8 +31,12 @@ class User(db.Model):
     id_institutie = Column(Integer, ForeignKey('institutii.id'))
     institutie = relationship("Institutie", back_populates="users")
 
+    def check_password(self, password):
+        return check_password_hash(self.parola, password)
+
     def __repr__(self):
         return f'<User {self.nume} {self.prenume}>'
+
 
 class Pacienti(db.Model):
     __tablename__ = 'pacienti'
@@ -51,3 +57,27 @@ class Pacienti(db.Model):
 
     def __repr__(self):
         return f'<Pacient {self.nume} {self.prenume}>'
+
+
+def create_pacienti_tables():
+    hospitals = Institutie.query.all()
+    for hospital in hospitals:
+        table_name = f'pacienti_{hospital.nume.replace(" ", "_").replace(".", "")}'
+        query = text(f"""
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            id SERIAL PRIMARY KEY,
+            nume VARCHAR(255),
+            prenume VARCHAR(255),
+            data_nastere VARCHAR(255),
+            varsta INTEGER,
+            cnp VARCHAR(255) UNIQUE,
+            sex VARCHAR(255),
+            fisa_medicala VARCHAR(255),
+            nr_telefon VARCHAR(255),
+            email VARCHAR(255) UNIQUE,
+            adresa VARCHAR(255),
+            id_pacienti INTEGER REFERENCES pacienti(id)
+        );
+        """)
+        db.session.execute(query)
+    db.session.commit()

@@ -8,4 +8,8 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app import routes
+from app import models, routes
+
+with app.app_context():
+    db.create_all()
+    models.create_pacienti_tables()

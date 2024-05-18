@@ -5,6 +5,7 @@ from app.models import User, Institutie
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import abort
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -14,6 +15,14 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and user.check_password(form.password.data):
+            session['is_authenticated'] = True
+            session['role'] = user.role
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid email or password.', 'error')
     return render_template('login.html', title='Login', form=form)
 
 
@@ -79,7 +88,7 @@ def register_user():
             parola=hashed_password,
             is_auth=False,
             role='user',
-            id_institutie = institutie.id
+            id_institutie=institutie.id
         )
         db.session.add(user)
         db.session.commit()
@@ -109,12 +118,19 @@ def services():
 def add_patient():
     return render_template('add_patient.html')
 
+
 @app.route('/view_intersection')
 def view_intersection():
     return render_template('view_intersection.html')
+
 
 @app.route('/manage_patients')
 def manage_patients():
     return render_template('manage_patients.html')
 
 
+@app.route('/dashboard')
+def dashboard():
+    if not session.get('is_authenticated') or session.get('role') != 'admin':
+        abort(403)
+    return render_template('dashboard.html')

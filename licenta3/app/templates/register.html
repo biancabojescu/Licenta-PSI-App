@@ -22,6 +22,9 @@
             <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
             <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
             {% if session.is_authenticated %}
+                {% if session.role == 'admin' %}
+                    <li style="padding: 0 15px;"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                {% endif %}
                 <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
