@@ -1,0 +1,35 @@
+.error-container {
+    text-align: center;
+    padding: 100px;
+}
+
+#error-image {
+    width: 30%;
+    height: auto;
+    object-fit: cover;
+}
+
+.error-container h1 {
+    font-size: 7em;
+    color: #BA68C8;
+}
+
+.error-container p {
+    font-size: 2em;
+    color: #ababab;
+}
+
+.error-container .button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 15px 30px;
+    background: #5b38be;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.error-container .button:hover {
+    background: #271759;
+}

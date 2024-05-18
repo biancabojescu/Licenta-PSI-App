@@ -2,22 +2,20 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - HealthShare</title>
+    <title>Error - HealthShare</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/dashboard.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/error.css">
 </head>
-
 <body>
-  <header>
+    <header>
     <div class="logo">
         <a href="{{ url_for('index') }}">
             <img src="../static/images/logo.png" alt="HealthShare logo">
             <span class="logo-text">HealthShare</span>
         </a>
     </div>
-  <nav>
+    <nav>
         <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
             <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
             <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
@@ -32,13 +30,11 @@
         </ul>
     </nav>
     </header>
-
-    <div class="container">
-        <h1>Admin Dashboard</h1>
-        <p>Manage the site and view statistics.</p>
-        <!-- Add your dashboard content here -->
+    <div class="error-container">
+        <h1>Error!</h1>
+        <img src="../static/images/error.png" alt="Unauthorized" id="error-image">>
+        <p>{{ message }}</p>
+        <a href="{{ url_for('services') }}" class="button">Go to Services</a>
     </div>
-
-    <script type="text/javascript" src="../static/javascript/dashboard.js"></script>
 </body>
 </html>

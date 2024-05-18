@@ -20,6 +20,7 @@ def login():
         if user and user.check_password(form.password.data):
             session['is_authenticated'] = True
             session['role'] = user.role
+            session['profesie'] = user.profesie
             return redirect(url_for('index'))
         else:
             flash('Invalid email or password.', 'error')
@@ -60,6 +61,7 @@ def login_user():
             session['is_authenticated'] = True
             session['user_id'] = user.id
             session['role'] = user.role
+            session['profesie'] = user.profesie
             flash('Login successful!', 'success')
             return redirect(url_for('index'))
         else:
@@ -101,11 +103,6 @@ def register_user():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
 @app.route('/services')
 def services():
     if not session.get('is_authenticated'):
@@ -116,16 +113,35 @@ def services():
 
 @app.route('/add_patient')
 def add_patient():
+    if not session.get('is_authenticated'):
+        flash('You need to be logged in to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta']:
+        return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
+
     return render_template('add_patient.html')
 
 
 @app.route('/view_intersection')
 def view_intersection():
+    if not session.get('is_authenticated'):
+        flash('You need to be logged in to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    if session.get('profesie') not in ['administrator', 'doctor']:
+        return render_template('error.html',
+                               message="Unauthorized access. You do not have permission to view intersections.")
+
     return render_template('view_intersection.html')
 
 
 @app.route('/manage_patients')
 def manage_patients():
+    if not session.get('is_authenticated'):
+        flash('You need to be logged in to access this page.', 'danger')
+        return redirect(url_for('login'))
+
     return render_template('manage_patients.html')
 
 
