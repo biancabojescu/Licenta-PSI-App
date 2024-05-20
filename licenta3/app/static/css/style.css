@@ -161,7 +161,7 @@ header ul li a:hover::before {
     background-color: #4512a3;
 }
 
-/* Responsivitate */
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;

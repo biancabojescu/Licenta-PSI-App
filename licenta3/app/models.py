@@ -46,7 +46,7 @@ class Pacienti(db.Model):
     prenume = Column(String(255))
     data_nastere = Column(String(255))
     varsta = Column(Integer)
-    cnp = Column(String(255), unique=True)
+    cnp = Column(String(255))
     sex = Column(String(255))
     fisa_medicala = Column(String(255))
     nr_telefon = Column(String(255))

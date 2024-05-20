@@ -5,32 +5,98 @@
     <title>HealthShare</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/add_patient.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-   <header>
-    <div class="logo">
-        <a href="{{ url_for('index') }}">
-            <img src="../static/images/logo.png" alt="HealthShare logo">
-            <span class="logo-text">HealthShare</span>
-        </a>
-    </div>
-    <nav>
-        <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
-            <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
-            <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
-            {% if session.is_authenticated %}
-                {% if session.role == 'admin' %}
-                    <li style="padding: 0 15px;"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="../static/images/logo.png" alt="HealthShare logo">
+                <span class="logo-text">HealthShare</span>
+            </a>
+        </div>
+        <nav>
+            <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
+                <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
+                <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
+                {% if session.is_authenticated %}
+                    {% if session.role == 'admin' %}
+                        <li style="padding: 0 15px;"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+                    <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                    <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
                 {% endif %}
-                <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
-            {% else %}
-                <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+            </ul>
+        </nav>
     </header>
+
+    <div class="form-container">
+        <form action="{{ url_for('add_patient') }}" method="POST" id="add-patient-form">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.last_name(placeholder='Nume', required=True) }}
+            </div>
+            <div>
+                {{ form.first_name(placeholder='Prenume', required=True) }}
+            </div>
+            <div>
+                {{ form.birth_date(placeholder='Data Nașterii') }}
+            </div>
+            <div>
+                {{ form.age(placeholder='Vârstă') }}
+            </div>
+            <div>
+                {{ form.cnp(placeholder='CNP', required=True) }}
+            </div>
+            <div>
+                {{ form.sex(placeholder='Sex') }}
+            </div>
+            <div>
+                {{ form.medical_record(placeholder='Fișă Medicală') }}
+            </div>
+            <div>
+                {{ form.phone_number(placeholder='Număr de telefon') }}
+            </div>
+            <div>
+                {{ form.email(placeholder='Email') }}
+            </div>
+            <div>
+                {{ form.address(placeholder='Adresa') }}
+            </div>
+            <div>
+                {{ form.hospital(placeholder='Spital') }}
+            </div>
+            <div>
+                {{ form.submit() }}
+            </div>
+        </form>
+    </div>
+
+    <div class="overlay" id="success-message">
+        <div class="overlay-content">
+            <h2>Pacient adăugat cu succes!</h2>
+        </div>
+    </div>
+
+    <div class="overlay" id="error-message">
+        <div class="overlay-content">
+            <h2>A apărut o problemă sau pacientul există deja în baza de date!</h2>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            {% if session.get('show_success_message') %}
+                $('#success-message').fadeIn().delay(3000).fadeOut();
+                {{ session.pop('show_success_message') }}
+            {% elif session.get('show_error_message') %}
+                $('#error-message').fadeIn().delay(3000).fadeOut();
+                {{ session.pop('show_error_message') }}
+            {% endif %}
+        });
+    </script>
 </body>
 </html>

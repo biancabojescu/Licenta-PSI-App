@@ -1,7 +1,9 @@
 from flask import render_template, redirect, url_for, session, flash
+from sqlalchemy import text
+
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User, Institutie
+from app.forms import LoginForm, RegistrationForm, AddPatientForm
+from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import abort
 
@@ -75,6 +77,7 @@ def register_user():
     institutii = Institutie.query.all()
     hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
     form.hospital.choices = hospital_choices
+
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
         institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
@@ -111,16 +114,68 @@ def services():
     return render_template('services.html')
 
 
-@app.route('/add_patient')
+@app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if not session.get('is_authenticated'):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta']:
+    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta'] or session.get('role') != 'admin':
         return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
 
-    return render_template('add_patient.html')
+    form = AddPatientForm()
+    institutii = Institutie.query.all()
+    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
+    form.hospital.choices = hospital_choices
+
+    if form.validate_on_submit():
+        try:
+            institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
+            new_patient = Pacienti(
+                nume=form.last_name.data,
+                prenume=form.first_name.data,
+                data_nastere=form.birth_date.data.strftime('%Y-%m-%d'),
+                varsta=form.age.data,
+                cnp=form.cnp.data,
+                sex=form.sex.data,
+                fisa_medicala=form.medical_record.data,
+                nr_telefon=form.phone_number.data,
+                email=form.email.data,
+                adresa=form.address.data,
+                id_institutie=institutie.id
+            )
+            db.session.add(new_patient)
+            db.session.commit()
+
+            # Adăugăm pacientul în tabela specifică spitalului
+            table_name = f'pacienti_{form.hospital.data}'.replace(" ", "_").replace(".", "")
+            query = text(f"""
+                INSERT INTO {table_name} (nume, prenume, data_nastere, varsta, cnp, sex, fisa_medicala, nr_telefon, email, adresa, id_pacienti)
+                VALUES (:nume, :prenume, :data_nastere, :varsta, :cnp, :sex, :fisa_medicala, :nr_telefon, :email, :adresa, :id_pacienti)
+                """)
+            db.session.execute(query, {
+                'nume': form.first_name.data,
+                'prenume': form.last_name.data,
+                'data_nastere': form.birth_date.data.strftime('%Y-%m-%d'),
+                'varsta': form.age.data,
+                'cnp': form.cnp.data,
+                'sex': form.sex.data,
+                'fisa_medicala': form.medical_record.data,
+                'nr_telefon': form.phone_number.data,
+                'email': form.email.data,
+                'adresa': form.address.data,
+                'id_pacienti': new_patient.id
+            })
+            db.session.commit()
+
+            session['show_success_message'] = True
+            return redirect(url_for('add_patient'))
+        except Exception as e:
+            db.session.rollback()
+            session['show_error_message'] = True
+            return redirect(url_for('add_patient'))
+
+    return render_template('add_patient.html', form=form)
 
 
 @app.route('/view_intersection')
@@ -129,7 +184,7 @@ def view_intersection():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor']:
+    if session.get('profesie') not in ['administrator', 'doctor'] or session.get('role') != 'admin':
         return render_template('error.html',
                                message="Unauthorized access. You do not have permission to view intersections.")
 
