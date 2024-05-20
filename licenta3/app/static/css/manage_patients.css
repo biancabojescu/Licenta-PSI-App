@@ -1,0 +1,140 @@
+body {
+    color: #ecf0f1;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #5b38be;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo img {
+    width: 50px;
+    vertical-align: middle;
+}
+
+.logo-text {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #dcdde1;
+}
+
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/cover;
+    padding: 70px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+button[type="submit"] {
+    background-color: #5b38be;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #6d44b8;
+}
+
+#patient-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#patient-list ul {
+    padding: 0;
+}
+
+#patient-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #3b5998;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+#patient-list li:hover {
+    background-color: #4c70ba;
+}
+
+#patient-list li span {
+    flex: 1;
+    color: #ecf0f1;
+}
+
+#patient-list li form {
+    margin: 0;
+    display: inline;
+}
+
+#patient-list li form button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    background-color: #5b38be;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.3s;
+}
+
+#patient-list li form button:hover {
+    background-color: #6d44b8;
+}

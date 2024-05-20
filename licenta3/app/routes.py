@@ -1,8 +1,10 @@
-from flask import render_template, redirect, url_for, session, flash
-from sqlalchemy import text
+import logging
 
+from flask import render_template, redirect, url_for, session, flash, request
+from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, AddPatientForm
+from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, UpdatePatientForm
 from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import abort
@@ -191,13 +193,115 @@ def view_intersection():
     return render_template('view_intersection.html')
 
 
-@app.route('/manage_patients')
+@app.route('/manage_patients', methods=['GET', 'POST'])
 def manage_patients():
     if not session.get('is_authenticated'):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    return render_template('manage_patients.html')
+    search_query = request.args.get('search_query', '')
+
+    try:
+        if session.get('role') == 'admin':
+            if search_query:
+                patients = Pacienti.query.filter(
+                    Pacienti.nume.ilike(f"%{search_query}%") | Pacienti.cnp.ilike(f"%{search_query}%")
+                ).all()
+            else:
+                patients = Pacienti.query.all()
+        else:
+            user = User.query.get(session.get('user_id'))
+            institution_id = user.id_institutie
+            institution = Institutie.query.get(institution_id)
+            table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+            if search_query:
+                query = text(f"SELECT * FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
+                patients = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchall()
+            else:
+                query = text(f"SELECT * FROM {table_name}")
+                patients = db.session.execute(query).fetchall()
+    except OperationalError as e:
+        flash('Database error occurred. Please try again later.', 'danger')
+        patients = []
+
+    return render_template('manage_patients.html', patients=patients)
+
+
+import logging
+
+import logging
+
+
+@app.route('/update_patient/<int:patient_id>', methods=['GET', 'POST'])
+def update_patient(patient_id):
+    if not session.get('is_authenticated'):
+        flash('You need to be logged in to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    patient = Pacienti.query.get_or_404(patient_id)
+    logging.info(f"Patient data before form population: {patient}")
+
+    form = UpdatePatientForm(obj=patient)
+    logging.info(f"Form data after population: {form.data}")
+
+    if form.validate_on_submit():
+        try:
+            logging.info(f"Form data on submit: {form.data}")
+            patient.nume = form.last_name.data
+            patient.prenume = form.first_name.data
+            patient.data_nastere = form.birth_date.data.strftime('%Y-%m-%d')
+            patient.varsta = form.age.data
+            patient.cnp = form.cnp.data
+            patient.sex = form.sex.data
+            patient.fisa_medicala = form.medical_record.data
+            patient.nr_telefon = form.phone_number.data
+            patient.email = form.email.data
+            patient.adresa = form.address.data
+            db.session.commit()
+            flash('Patient updated successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            logging.error(f"Error occurred while updating patient: {e}")
+            flash('An error occurred while updating the patient. Please try again.', 'danger')
+        return redirect(url_for('manage_patients'))
+
+    return render_template('update_patient.html', form=form, patient_id=patient_id)
+
+
+@app.route('/delete_patient/<int:patient_id>', methods=['POST'])
+def delete_patient(patient_id):
+    if not session.get('is_authenticated'):
+        flash('You need to be logged in to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    if session.get('profession') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
+        flash('You do not have permission to delete patients.', 'danger')
+        return redirect(url_for('manage_patients'))
+
+    patient = Pacienti.query.get_or_404(patient_id)
+    try:
+        institution_id = patient.id_institutie
+        institution = Institutie.query.get(institution_id)
+        table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+        query = text(f"DELETE FROM {table_name} WHERE id_pacienti = :patient_id")
+        db.session.execute(query, {'patient_id': patient_id})
+        db.session.commit()
+
+        db.session.delete(patient)
+        db.session.commit()
+        flash('Patient deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error occurred while deleting patient: {e}")
+        flash('An error occurred while deleting the patient. Please try again.', 'danger')
+
+    return redirect(url_for('manage_patients'))
+
+
+@app.route('/search_patient', methods=['POST'])
+def search_patient():
+    search_query = request.form.get('search_query')
+    return redirect(url_for('manage_patients', search_query=search_query))
 
 
 @app.route('/dashboard')
