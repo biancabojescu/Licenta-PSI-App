@@ -18,6 +18,10 @@ form.update-form {
     height: 710px;
 }
 
+form.update-user{
+    height: 370px;
+}
+
 form div {
     margin-bottom: 20px;
 }

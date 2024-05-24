@@ -4,11 +4,11 @@ from flask import render_template, redirect, url_for, session, flash, request
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, UpdatePatientForm
+from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
 from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import abort
 from datetime import datetime
+
 
 @app.route('/')
 @app.route('/index')
@@ -227,8 +227,6 @@ def manage_patients():
     return render_template('manage_patients.html', patients=patients)
 
 
-
-
 @app.route('/update_patient/<int:patient_id>', methods=['GET', 'POST'])
 def update_patient(patient_id):
     if not session.get('is_authenticated'):
@@ -272,6 +270,7 @@ def update_patient(patient_id):
 
     return render_template('update_patient.html', form=form, patient_id=patient_id)
 
+
 @app.route('/delete_patient/<int:patient_id>', methods=['POST'])
 def delete_patient(patient_id):
     if not session.get('is_authenticated'):
@@ -308,8 +307,72 @@ def search_patient():
     return redirect(url_for('manage_patients', search_query=search_query))
 
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if not session.get('is_authenticated') or session.get('role') != 'admin':
-        abort(403)
-    return render_template('dashboard.html')
+        flash('You need to be logged in as an admin to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    search_query = request.args.get('search_query', '')
+
+    try:
+        if search_query:
+            users = User.query.filter(
+                (User.nume.ilike(f"%{search_query}%") | User.email.ilike(f"%{search_query}%")) & (User.role != 'admin')
+            ).all()
+        else:
+            users = User.query.filter(User.role != 'admin').all()
+    except OperationalError as e:
+        flash('Database error occurred. Please try again later.', 'danger')
+        users = []
+
+    return render_template('dashboard.html', users=users)
+
+
+@app.route('/update_user/<int:user_id>', methods=['GET', 'POST'])
+def update_user(user_id):
+    if not session.get('is_authenticated') or session.get('role') != 'admin':
+        flash('You need to be logged in as an admin to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(user_id)
+    form = UpdateUserForm()
+
+    if request.method == 'GET':
+        form.last_name.data = user.nume
+        form.first_name.data = user.prenume
+        form.email.data = user.email
+        form.profession.data = user.profesie
+
+    if form.validate_on_submit():
+        try:
+            user.nume = form.last_name.data
+            user.prenume = form.first_name.data
+            user.email = form.email.data
+            user.profesie = form.profession.data
+            db.session.commit()
+            flash('User updated successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating the user. Please try again.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    return render_template('update_user.html', form=form, user_id=user_id)
+
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if not session.get('is_authenticated') or session.get('role') != 'admin':
+        flash('You need to be logged in as an admin to access this page.', 'danger')
+        return redirect(url_for('login'))
+
+    user = User.query.get_or_404(user_id)
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the user. Please try again.', 'danger')
+
+    return redirect(url_for('dashboard'))

@@ -19,7 +19,7 @@ class RegistrationForm(FlaskForm):
     profession = SelectField('Profession', choices=[('administrator', 'Administrator'), ('doctor', 'Doctor'),
                                                     ('asistenta', 'Asistentă'), ('rezident', 'Rezident')],
                              validators=[DataRequired()])
-    hospital = SelectField('Hospital', choices=[], validators=[DataRequired()])  # Choices will be populated dynamically
+    hospital = SelectField('Hospital', choices=[], validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=255)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
@@ -57,6 +57,16 @@ class UpdatePatientForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=255)])
     address = StringField('Address', validators=[DataRequired(), Length(min=1, max=255)])
     submit = SubmitField('Update Patient')
+
+
+class UpdateUserForm(FlaskForm):
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=1, max=255)])
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=1, max=255)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=255)])
+    profession = SelectField('Profession', choices=[('administrator', 'Administrator'), ('doctor', 'Doctor'),
+                                                    ('asistenta', 'Asistentă'), ('rezident', 'Rezident')],
+                             validators=[DataRequired()])
+    submit = SubmitField('Update User')
 
 
 class SearchForm(FlaskForm):
