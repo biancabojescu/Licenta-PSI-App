@@ -8,7 +8,7 @@ from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, U
 from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import abort
-
+from datetime import datetime
 
 @app.route('/')
 @app.route('/index')
@@ -227,9 +227,6 @@ def manage_patients():
     return render_template('manage_patients.html', patients=patients)
 
 
-import logging
-
-import logging
 
 
 @app.route('/update_patient/<int:patient_id>', methods=['GET', 'POST'])
@@ -239,10 +236,19 @@ def update_patient(patient_id):
         return redirect(url_for('login'))
 
     patient = Pacienti.query.get_or_404(patient_id)
-    logging.info(f"Patient data before form population: {patient}")
 
-    form = UpdatePatientForm(obj=patient)
-    logging.info(f"Form data after population: {form.data}")
+    form = UpdatePatientForm()
+    if request.method == 'GET':
+        form.last_name.data = patient.nume
+        form.first_name.data = patient.prenume
+        form.birth_date.data = datetime.strptime(patient.data_nastere, '%Y-%m-%d').date()
+        form.age.data = patient.varsta
+        form.cnp.data = patient.cnp
+        form.sex.data = patient.sex
+        form.medical_record.data = patient.fisa_medicala
+        form.phone_number.data = patient.nr_telefon
+        form.email.data = patient.email
+        form.address.data = patient.adresa
 
     if form.validate_on_submit():
         try:
@@ -261,12 +267,10 @@ def update_patient(patient_id):
             flash('Patient updated successfully!', 'success')
         except Exception as e:
             db.session.rollback()
-            logging.error(f"Error occurred while updating patient: {e}")
             flash('An error occurred while updating the patient. Please try again.', 'danger')
         return redirect(url_for('manage_patients'))
 
     return render_template('update_patient.html', form=form, patient_id=patient_id)
-
 
 @app.route('/delete_patient/<int:patient_id>', methods=['POST'])
 def delete_patient(patient_id):

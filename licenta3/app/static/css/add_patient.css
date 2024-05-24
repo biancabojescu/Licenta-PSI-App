@@ -14,6 +14,9 @@ form {
     border-radius: 5px;
     box-shadow: 5px 20px 50px #000;
 }
+form.update-form {
+    height: 710px;
+}
 
 form div {
     margin-bottom: 20px;

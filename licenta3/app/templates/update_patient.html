@@ -33,7 +33,7 @@
     </header>
 
     <div class="form-container">
-        <form action="{{ url_for('update_patient', patient_id=patient_id) }}" method="POST">
+        <form action="{{ url_for('update_patient', patient_id=patient_id) }}" method="POST" class="update-form">
             {{ form.hidden_tag() }}
             <div>
                  {{ form.last_name(placeholder='Nume', required=True) }}
@@ -64,9 +64,6 @@
             </div>
             <div>
                 {{ form.address(placeholder='Adresa') }}
-            </div>
-            <div>
-                 {{ form.hospital(placeholder='Spital') }}
             </div>
             <div>
                 {{ form.submit() }}

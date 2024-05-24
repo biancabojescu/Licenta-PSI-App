@@ -56,7 +56,6 @@ class UpdatePatientForm(FlaskForm):
     phone_number = StringField('Phone Number', validators=[DataRequired(), Length(min=10, max=15)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=255)])
     address = StringField('Address', validators=[DataRequired(), Length(min=1, max=255)])
-    hospital = SelectField('Hospital', choices=[], validators=[DataRequired()])
     submit = SubmitField('Update Patient')
 
 

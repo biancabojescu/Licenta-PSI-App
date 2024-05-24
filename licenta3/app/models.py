@@ -58,7 +58,6 @@ class Pacienti(db.Model):
     def __repr__(self):
         return f'<Pacient id={self.id} nume={self.nume} prenume={self.prenume} data_nastere={self.data_nastere} varsta={self.varsta} cnp={self.cnp} sex={self.sex} fisa_medicala={self.fisa_medicala} nr_telefon={self.nr_telefon} email={self.email} adresa={self.adresa}>'
 
-
 def create_pacienti_tables():
     hospitals = Institutie.query.all()
     for hospital in hospitals:
