@@ -122,7 +122,7 @@ def add_patient():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta'] or session.get('role') != 'admin':
+    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta'] and session.get('role') != 'admin':
         return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
 
     form = AddPatientForm()
@@ -186,7 +186,7 @@ def view_intersection():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor'] or session.get('role') != 'admin':
+    if session.get('profesie') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
         return render_template('error.html',
                                message="Unauthorized access. You do not have permission to view intersections.")
 
@@ -309,7 +309,7 @@ def search_patient():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    if not session.get('is_authenticated') or session.get('role') != 'admin':
+    if not session.get('is_authenticated') and session.get('role') != 'admin':
         flash('You need to be logged in as an admin to access this page.', 'danger')
         return redirect(url_for('login'))
 
@@ -331,7 +331,7 @@ def dashboard():
 
 @app.route('/update_user/<int:user_id>', methods=['GET', 'POST'])
 def update_user(user_id):
-    if not session.get('is_authenticated') or session.get('role') != 'admin':
+    if not session.get('is_authenticated') and session.get('role') != 'admin':
         flash('You need to be logged in as an admin to access this page.', 'danger')
         return redirect(url_for('login'))
 
@@ -362,7 +362,7 @@ def update_user(user_id):
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
-    if not session.get('is_authenticated') or session.get('role') != 'admin':
+    if not session.get('is_authenticated') and session.get('role') != 'admin':
         flash('You need to be logged in as an admin to access this page.', 'danger')
         return redirect(url_for('login'))
 
