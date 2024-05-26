@@ -1,11 +1,34 @@
-body{
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+
+
+
+body {
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 92vh;
+  min-height: calc(100vh - 80px - 40px); /* ajustează înălțimea corpului pentru a include header și footer */
 }
-.main{
+
+.main {
   width: 450px;
   height: 600px;
   overflow: hidden;
@@ -13,15 +36,18 @@ body{
   border-radius: 5px;
   box-shadow: 5px 20px 50px #000;
 }
-#chk{
+
+#chk {
   display: none;
 }
-.login{
+
+.login {
   position: relative;
-  width:100%;
+  width: 100%;
   height: 100%;
 }
-label{
+
+label {
   color: #ede7ff;
   font-size: 2.3em;
   justify-content: center;
@@ -31,7 +57,8 @@ label{
   cursor: pointer;
   transition: .5s ease-in-out;
 }
-input{
+
+input {
   height: 40px;
   width: 70%;
   background: #ede7ff;
@@ -43,23 +70,25 @@ input{
   outline: none;
   border-radius: 5px;
 }
+
 .register-btn {
-  display: block; /* sau 'block' dacă dorești ca să ocupi toată lățimea containerului */
-  padding: 10px 20px; /* sau alte valori, în funcție de cât de mare vrei să fie butonul */
-  background-color: #5b38be; /* culoarea de fundal pentru buton */
-  color: #ffffff; /* culoarea textului pentru buton */
+  display: block;
+  padding: 10px 20px;
+  background-color: #5b38be;
+  color: #ffffff;
   text-align: center;
   text-decoration: none;
   flex-direction: column;
-    margin: 80px auto 10px;
+  margin: 80px auto 10px;
   align-items: flex-start;
 }
 
-button{
-    display: block;
-    margin: 45px auto 10px;
+button {
+  display: block;
+  margin: 45px auto 10px;
 }
-button, .register-btn{
+
+button, .register-btn {
   width: 60%;
   height: 40px;
   justify-content: center;
@@ -73,29 +102,34 @@ button, .register-btn{
   transition: .2s ease-in;
   cursor: pointer;
 }
-button:hover, .register-btn:hover{
+
+button:hover, .register-btn:hover {
   background: #6d44b8;
 }
-.signup{
+
+.signup {
   height: 560px;
   background: #eee;
   border-radius: 60% / 10%;
   transform: translateY(-160px);
   transition: .8s ease-in-out;
 }
-.signup label{
-  margin-bottom: 30px; /* Adaugă spațiu sub label */
+
+.signup label {
+  margin-bottom: 30px;
   color: #573b8a;
   transform: scale(.6);
 }
 
-#chk:checked ~ .signup{
+#chk:checked ~ .signup {
   transform: translateY(-600px);
 }
-#chk:checked ~ .signup label{
+
+#chk:checked ~ .signup label {
   transform: scale(1);
 }
-#chk:checked ~ .login label{
+
+#chk:checked ~ .login label {
   transform: scale(.6);
 }
 
@@ -103,61 +137,114 @@ button:hover, .register-btn:hover{
   max-width: 100%;
   margin-left: 70px;
 }
+
 .checkbox-label {
-    display: block;
-    position: relative;
-    justify-content: center;
-    padding-left: 130px;
-    margin: 10px auto;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 20px;
-    color: #ede7ff; /* Culoare text pentru a se potrivi cu tema */
-    user-select: none;
+  display: block;
+  position: relative;
+  justify-content: center;
+  padding-left: 130px;
+  margin: 10px auto;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 20px;
+  color: #ede7ff;
+  user-select: none;
 }
 
-/* Ascunde checkbox-ul original */
 .checkbox-label input {
-    position: absolute;
-    justify-content: center;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
+  position: absolute;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
-/* Crează un nou box pentru checkbox */
 .slider {
-    position: absolute;
-    top: 0;
-    left: 85px;
-    height: 20px;
-    width: 34px;
-    background-color: #ccc;
-    border-radius: 34px;
-    transition: .4s;
+  position: absolute;
+  top: 0;
+  left: 85px;
+  height: 20px;
+  width: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: .4s;
 }
 
-/* Când inputul este verificat, schimbă culoarea slider-ului */
 .checkbox-label input:checked + .slider {
-    background-color: #5b38be;
+  background-color: #5b38be;
 }
 
-/* Stil pentru partea care se mișcă a slider-ului */
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
 }
 
-/* Mișcă sliderul la verificare */
 .checkbox-label input:checked + .slider:before {
-    transform: translateX(14px);
+  transform: translateX(14px);
 }
 
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 20px;
+  }
+
+  header .logo {
+    margin-bottom: 10px;
+  }
+
+  header ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+  }
+
+  .main {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  label {
+    font-size: 1.8em;
+    margin: 30px;
+  }
+
+  input, button, .register-btn {
+    width: 90%;
+    height: 40px;
+  }
+
+  .signup {
+    border-radius: 20% / 5%;
+    transform: translateY(-100px);
+  }
+
+  .signup label {
+    transform: scale(0.8);
+  }
+
+  #chk:checked ~ .signup {
+    transform: translateY(-400px);
+  }
+
+  #chk:checked ~ .signup label {
+    transform: scale(1);
+  }
+
+  #chk:checked ~ .login label {
+    transform: scale(0.8);
+  }
+}
