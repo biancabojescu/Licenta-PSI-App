@@ -5,12 +5,12 @@
     <title>HealthShare</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/style.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/view_intersection.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-   <header>
+    <header>
     <div class="logo">
         <a href="{{ url_for('index') }}">
             <img src="../static/images/logo.png" alt="HealthShare logo">
@@ -33,8 +33,40 @@
     </nav>
     </header>
 
+     <div class="container">
+        <h1>View Intersection</h1>
+        <form method="GET" action="{{ url_for('view_intersection') }}">
+            <label for="search_query">CNP:</label>
+            <input type="text" id="search_query" name="search_query" required>
+            <button type="submit">View Intersection</button>
+        </form>
+
+        {% if pacient %}
+        <div class="patient-info">
+            <h2>Patient Information</h2>
+            <p><strong>Name:</strong> {{ pacient.nume }} {{ pacient.prenume }}</p>
+            <p><strong>CNP:</strong> {{ pacient.cnp }}</p>
+            <p><strong>Address:</strong> {{ pacient.adresa }}</p>
+            <p><strong>Email:</strong> {{ pacient.email }}</p>
+            <p><strong>Phone:</strong> {{ pacient.nr_telefon }}</p>
+        </div>
+        {% endif %}
+
+        {% if intersection_result %}
+        <div class="intersection-result">
+            <h2>Intersection Result</h2>
+            <ul>
+                {% for hospital in intersection_result %}
+                <li>{{ hospital }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
     <footer>
         <p>Copyright &copy; 2024 BiancaBojescu</p>
     </footer>
+
 </body>
 </html>

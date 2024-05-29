@@ -50,7 +50,7 @@ class Pacienti(db.Model):
     sex = Column(String(255))
     fisa_medicala = Column(String(255))
     nr_telefon = Column(String(255))
-    email = Column(String(255), unique=True)
+    email = Column(String(255))
     adresa = Column(String(255))
     id_institutie = Column(Integer, ForeignKey('institutii.id'))
     institutie = relationship("Institutie", back_populates="pacienti")

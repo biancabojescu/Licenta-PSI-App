@@ -9,7 +9,6 @@ from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -88,8 +87,8 @@ def register_user():
             flash('Selected hospital does not exist. Please choose a valid hospital.', 'error')
             return redirect(url_for('register'))
         user = User(
-            nume=form.first_name.data,
-            prenume=form.last_name.data,
+            nume=form.last_name.data,
+            prenume=form.first_name.data,
             email=form.email.data,
             profesie=form.profession.data,
             parola=hashed_password,
@@ -149,15 +148,16 @@ def add_patient():
             db.session.add(new_patient)
             db.session.commit()
 
-            # Adăugăm pacientul în tabela specifică spitalului
             table_name = f'pacienti_{form.hospital.data}'.replace(" ", "_").replace(".", "")
             query = text(f"""
                 INSERT INTO {table_name} (nume, prenume, data_nastere, varsta, cnp, sex, fisa_medicala, nr_telefon, email, adresa, id_pacienti)
                 VALUES (:nume, :prenume, :data_nastere, :varsta, :cnp, :sex, :fisa_medicala, :nr_telefon, :email, :adresa, :id_pacienti)
                 """)
+            print(query)
+            print(form.last_name.data)
             db.session.execute(query, {
-                'nume': form.first_name.data,
-                'prenume': form.last_name.data,
+                'nume': form.last_name.data,
+                'prenume': form.first_name.data,
                 'data_nastere': form.birth_date.data.strftime('%Y-%m-%d'),
                 'varsta': form.age.data,
                 'cnp': form.cnp.data,
@@ -180,18 +180,35 @@ def add_patient():
     return render_template('add_patient.html', form=form)
 
 
-@app.route('/view_intersection')
+@app.route('/view_intersection', methods=['GET', 'POST'])
 def view_intersection():
     if not session.get('is_authenticated'):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
-        return render_template('error.html',
-                               message="Unauthorized access. You do not have permission to view intersections.")
+    if session.get('role') == 'admin':
+        flash('You do not have permission to access this page.', 'danger')
+        return redirect(url_for('index'))
 
-    return render_template('view_intersection.html')
+    search_query = request.args.get('search_query', '')
+    pacient = None
+    intersection_result = []
 
+    user = User.query.get(session.get('user_id'))
+    institution_id = user.id_institutie
+    institution = Institutie.query.get(institution_id)
+    table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+
+    if search_query:
+        query = text(f"SELECT * FROM {table_name} WHERE cnp LIKE :search_query")
+        patient = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchall()
+        print(patient)
+    else:
+        query = text(f"SELECT * FROM {table_name}")
+        patient = db.session.execute(query).fetchall()
+        print(patient)
+
+    return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result)
 
 @app.route('/manage_patients', methods=['GET', 'POST'])
 def manage_patients():
@@ -217,6 +234,7 @@ def manage_patients():
             if search_query:
                 query = text(f"SELECT * FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
                 patients = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchall()
+                # aici trebuie sa adaugi ceva astfel incat id ul din tabela spitalului sa fie inlocuit cu id-ul din tabela mare de pacienti, astfel incat sa poata face cautarea
             else:
                 query = text(f"SELECT * FROM {table_name}")
                 patients = db.session.execute(query).fetchall()
@@ -277,7 +295,7 @@ def delete_patient(patient_id):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profession') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
+    if session.get('profesie') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
         flash('You do not have permission to delete patients.', 'danger')
         return redirect(url_for('manage_patients'))
 
