@@ -4,6 +4,7 @@ from flask import render_template, redirect, url_for, session, flash, request
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
+from app.criptatre_date import decrypt_data, private_key, encrypt_data, public_key
 from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
 from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -133,19 +134,26 @@ def add_patient():
     if form.validate_on_submit():
         try:
             institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
+
+            # Criptarea datelor
+            encrypted_cnp = encrypt_data(public_key, form.cnp.data)
+            encrypted_fisa_medicala = encrypt_data(public_key, form.medical_record.data)
+            encrypted_adresa = encrypt_data(public_key, form.address.data)
+
             new_patient = Pacienti(
                 nume=form.last_name.data,
                 prenume=form.first_name.data,
                 data_nastere=form.birth_date.data.strftime('%Y-%m-%d'),
                 varsta=form.age.data,
-                cnp=form.cnp.data,
+                cnp=encrypted_cnp,
                 sex=form.sex.data,
-                fisa_medicala=form.medical_record.data,
+                fisa_medicala=encrypted_fisa_medicala,
                 nr_telefon=form.phone_number.data,
                 email=form.email.data,
-                adresa=form.address.data,
+                adresa=encrypted_adresa,
                 id_institutie=institutie.id
             )
+
             db.session.add(new_patient)
             db.session.commit()
 
@@ -154,28 +162,30 @@ def add_patient():
                 INSERT INTO {table_name} (nume, prenume, data_nastere, varsta, cnp, sex, fisa_medicala, nr_telefon, email, adresa, id_pacienti)
                 VALUES (:nume, :prenume, :data_nastere, :varsta, :cnp, :sex, :fisa_medicala, :nr_telefon, :email, :adresa, :id_pacienti)
                 """)
-            print(query)
-            print(form.last_name.data)
+
+            # Inserarea în tabelul specific spitalului
             db.session.execute(query, {
                 'nume': form.last_name.data,
                 'prenume': form.first_name.data,
                 'data_nastere': form.birth_date.data.strftime('%Y-%m-%d'),
                 'varsta': form.age.data,
-                'cnp': form.cnp.data,
+                'cnp': encrypted_cnp,
                 'sex': form.sex.data,
-                'fisa_medicala': form.medical_record.data,
+                'fisa_medicala': encrypted_fisa_medicala,
                 'nr_telefon': form.phone_number.data,
                 'email': form.email.data,
-                'adresa': form.address.data,
+                'adresa': encrypted_adresa,
                 'id_pacienti': new_patient.id
             })
             db.session.commit()
 
             session['show_success_message'] = True
+            flash('Patient added successfully!', 'success')
             return redirect(url_for('add_patient'))
         except Exception as e:
             db.session.rollback()
-            session['show_error_message'] = True
+            logging.error(f"Error occurred while adding patient: {e}")
+            flash('An error occurred while adding the patient. Please try again.', 'danger')
             return redirect(url_for('add_patient'))
 
     return render_template('add_patient.html', form=form)
@@ -202,10 +212,37 @@ def view_intersection():
     table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
 
     if search_query:
-        query = text(f"SELECT * FROM {table_name} WHERE cnp LIKE :search_query")
-        pacient = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchone()
+        # Selectează toate CNP-urile din tabel
+        query = text(f"SELECT id, cnp FROM {table_name}")
+        results = db.session.execute(query).fetchall()
+
+        for result in results:
+            try:
+                decrypted_cnp = decrypt_data(private_key, result.cnp)
+                if decrypted_cnp == search_query:
+                    pacient_id = result.id
+                    pacient_query = text(f"SELECT * FROM {table_name} WHERE id = :id")
+                    pacient_data = db.session.execute(pacient_query, {'id': pacient_id}).fetchone()
+                    pacient = {
+                        'id': pacient_data.id,
+                        'nume': pacient_data.nume,
+                        'prenume': pacient_data.prenume,
+                        'data_nastere': pacient_data.data_nastere,
+                        'varsta': pacient_data.varsta,
+                        'cnp': decrypted_cnp,
+                        'sex': pacient_data.sex,
+                        'fisa_medicala': decrypt_data(private_key, pacient_data.fisa_medicala),
+                        'nr_telefon': pacient_data.nr_telefon,
+                        'email': pacient_data.email,
+                        'adresa': decrypt_data(private_key, pacient_data.adresa),
+                    }
+                    break
+            except Exception as e:
+                logging.error(f"Error decrypting CNP: {e}")
+                continue
 
     return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result)
+
 
 
 @app.route('/manage_patients', methods=['GET', 'POST'])
@@ -249,11 +286,36 @@ def manage_patients():
                     patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
                 else:
                     patients = []
+
+        decrypted_patients = []
+        for patient in patients:
+            try:
+                decrypted_cnp = decrypt_data(private_key, patient.cnp)
+                decrypted_fisa_medicala = decrypt_data(private_key, patient.fisa_medicala)
+                decrypted_adresa = decrypt_data(private_key, patient.adresa)
+
+                decrypted_patients.append({
+                    'id': patient.id,
+                    'nume': patient.nume,
+                    'prenume': patient.nume,
+                    'data_nastere': patient.data_nastere,
+                    'varsta': patient.varsta,
+                    'cnp': decrypted_cnp,
+                    'sex': patient.sex,
+                    'fisa_medicala': decrypted_fisa_medicala,
+                    'nr_telefon': patient.nr_telefon,
+                    'email': patient.email,
+                    'adresa': decrypted_adresa,
+                })
+            except Exception as e:
+                logging.error(f"Error decrypting patient data: {e}")
+                continue
+
     except OperationalError as e:
         flash('Database error occurred. Please try again later.', 'danger')
-        patients = []
+        decrypted_patients = []
 
-    return render_template('manage_patients.html', patients=patients)
+    return render_template('manage_patients.html', patients=decrypted_patients)
 
 
 @app.route('/update_patient/<int:patient_id>', methods=['GET', 'POST'])
@@ -270,30 +332,67 @@ def update_patient(patient_id):
         form.first_name.data = patient.prenume
         form.birth_date.data = datetime.strptime(patient.data_nastere, '%Y-%m-%d').date()
         form.age.data = patient.varsta
-        form.cnp.data = patient.cnp
+        form.cnp.data = decrypt_data(private_key, patient.cnp)
         form.sex.data = patient.sex
-        form.medical_record.data = patient.fisa_medicala
+        form.medical_record.data = decrypt_data(private_key, patient.fisa_medicala)
         form.phone_number.data = patient.nr_telefon
         form.email.data = patient.email
-        form.address.data = patient.adresa
+        form.address.data = decrypt_data(private_key, patient.adresa)
 
     if form.validate_on_submit():
         try:
             logging.info(f"Form data on submit: {form.data}")
+            # Actualizarea datelor în tabela principală 'pacienti'
             patient.nume = form.last_name.data
             patient.prenume = form.first_name.data
             patient.data_nastere = form.birth_date.data.strftime('%Y-%m-%d')
             patient.varsta = form.age.data
-            patient.cnp = form.cnp.data
+            patient.cnp = encrypt_data(public_key, form.cnp.data)
             patient.sex = form.sex.data
-            patient.fisa_medicala = form.medical_record.data
+            patient.fisa_medicala = encrypt_data(public_key, form.medical_record.data)
             patient.nr_telefon = form.phone_number.data
             patient.email = form.email.data
-            patient.adresa = form.address.data
+            patient.adresa = encrypt_data(public_key, form.address.data)
             db.session.commit()
+
+            # Obține numele spitalului asociat
+            institution = Institutie.query.get(patient.id_institutie)
+            table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+
+            # Actualizarea datelor în tabela specifică spitalului
+            update_query = text(f"""
+                UPDATE {table_name}
+                SET nume = :nume,
+                    prenume = :prenume,
+                    data_nastere = :data_nastere,
+                    varsta = :varsta,
+                    cnp = :cnp,
+                    sex = :sex,
+                    fisa_medicala = :fisa_medicala,
+                    nr_telefon = :nr_telefon,
+                    email = :email,
+                    adresa = :adresa
+                WHERE id_pacienti = :id_pacienti
+            """)
+            db.session.execute(update_query, {
+                'nume': form.last_name.data,
+                'prenume': form.first_name.data,
+                'data_nastere': form.birth_date.data.strftime('%Y-%m-%d'),
+                'varsta': form.age.data,
+                'cnp': encrypt_data(public_key, form.cnp.data),
+                'sex': form.sex.data,
+                'fisa_medicala': encrypt_data(public_key, form.medical_record.data),
+                'nr_telefon': form.phone_number.data,
+                'email': form.email.data,
+                'adresa': encrypt_data(public_key, form.address.data),
+                'id_pacienti': patient_id
+            })
+            db.session.commit()
+
             flash('Patient updated successfully!', 'success')
         except Exception as e:
             db.session.rollback()
+            logging.error(f"An error occurred while updating the patient: {e}")
             flash('An error occurred while updating the patient. Please try again.', 'danger')
         return redirect(url_for('manage_patients'))
 
@@ -360,18 +459,23 @@ def dashboard():
 
 @app.route('/update_user/<int:user_id>', methods=['GET', 'POST'])
 def update_user(user_id):
-    if not session.get('is_authenticated') and session.get('role') != 'admin':
+    if not session.get('is_authenticated') or session.get('role') != 'admin':
         flash('You need to be logged in as an admin to access this page.', 'danger')
         return redirect(url_for('login'))
 
     user = User.query.get_or_404(user_id)
     form = UpdateUserForm()
 
+    institutii = Institutie.query.all()
+    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
+    form.hospital.choices = hospital_choices
+
     if request.method == 'GET':
         form.last_name.data = user.nume
         form.first_name.data = user.prenume
         form.email.data = user.email
         form.profession.data = user.profesie
+        form.hospital.data = Institutie.query.get(user.id_institutie).nume
 
     if form.validate_on_submit():
         try:
@@ -379,6 +483,13 @@ def update_user(user_id):
             user.prenume = form.first_name.data
             user.email = form.email.data
             user.profesie = form.profession.data
+
+            institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
+            if not institutie:
+                flash('Selected hospital does not exist. Please choose a valid hospital.', 'error')
+                return redirect(url_for('update_user', user_id=user_id))
+
+            user.id_institutie = institutie.id
             db.session.commit()
             flash('User updated successfully!', 'success')
         except Exception as e:
@@ -387,6 +498,7 @@ def update_user(user_id):
         return redirect(url_for('dashboard'))
 
     return render_template('update_user.html', form=form, user_id=user_id)
+
 
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])

@@ -46,12 +46,12 @@ class Pacienti(db.Model):
     prenume = Column(String(255))
     data_nastere = Column(String(255))
     varsta = Column(Integer)
-    cnp = Column(String(255))
+    cnp = Column(String(1024))
     sex = Column(String(255))
-    fisa_medicala = Column(String(255))
+    fisa_medicala = Column(String(1024))
     nr_telefon = Column(String(255))
     email = Column(String(255))
-    adresa = Column(String(255))
+    adresa = Column(String(1024))
     id_institutie = Column(Integer, ForeignKey('institutii.id'))
     institutie = relationship("Institutie", back_populates="pacienti")
 
@@ -69,12 +69,12 @@ def create_pacienti_tables():
             prenume VARCHAR(255),
             data_nastere VARCHAR(255),
             varsta INTEGER,
-            cnp VARCHAR(255) UNIQUE,
+            cnp VARCHAR(1024) UNIQUE,
             sex VARCHAR(255),
-            fisa_medicala VARCHAR(255),
+            fisa_medicala VARCHAR(1024),
             nr_telefon VARCHAR(255),
             email VARCHAR(255) UNIQUE,
-            adresa VARCHAR(255),
+            adresa VARCHAR(1024),
             id_pacienti INTEGER REFERENCES pacienti(id)
         );
         """)

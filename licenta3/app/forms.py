@@ -66,6 +66,7 @@ class UpdateUserForm(FlaskForm):
     profession = SelectField('Profession', choices=[('administrator', 'Administrator'), ('doctor', 'Doctor'),
                                                     ('asistenta', 'Asistentă'), ('rezident', 'Rezident')],
                              validators=[DataRequired()])
+    hospital = SelectField('Hospital', choices=[], validators=[DataRequired()])
     submit = SubmitField('Update User')
 
 

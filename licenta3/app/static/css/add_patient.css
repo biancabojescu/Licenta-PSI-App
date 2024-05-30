@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 107vh;
+    height: 100vh;
 }
 
 form {
@@ -19,7 +19,7 @@ form.update-form {
 }
 
 form.update-user{
-    height: 370px;
+    height: 420px;
 }
 
 form div {
