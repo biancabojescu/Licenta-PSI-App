@@ -9,6 +9,7 @@ from app.models import User, Institutie, Pacienti
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -188,7 +189,8 @@ def view_intersection():
 
     if session.get('role') == 'admin':
         flash('You do not have permission to access this page.', 'danger')
-        return redirect(url_for('index'))
+        return render_template('error.html',
+                               message="Unauthorized access. You do not have permission to see intersections.")
 
     search_query = request.args.get('search_query', '')
     pacient = None
@@ -201,14 +203,10 @@ def view_intersection():
 
     if search_query:
         query = text(f"SELECT * FROM {table_name} WHERE cnp LIKE :search_query")
-        patient = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchall()
-        print(patient)
-    else:
-        query = text(f"SELECT * FROM {table_name}")
-        patient = db.session.execute(query).fetchall()
-        print(patient)
+        pacient = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchone()
 
     return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result)
+
 
 @app.route('/manage_patients', methods=['GET', 'POST'])
 def manage_patients():
@@ -232,12 +230,25 @@ def manage_patients():
             institution = Institutie.query.get(institution_id)
             table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
             if search_query:
-                query = text(f"SELECT * FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
-                patients = db.session.execute(query, {'search_query': f"%{search_query}%"}).fetchall()
-                # aici trebuie sa adaugi ceva astfel incat id ul din tabela spitalului sa fie inlocuit cu id-ul din tabela mare de pacienti, astfel incat sa poata face cautarea
+                institution_id_pacients = text(
+                    f"SELECT id_pacienti FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
+                patient_ids = db.session.execute(institution_id_pacients,
+                                                 {'search_query': f"%{search_query}%"}).fetchall()
+                patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
+
+                if patient_ids:
+                    patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
+                else:
+                    patients = []
             else:
-                query = text(f"SELECT * FROM {table_name}")
-                patients = db.session.execute(query).fetchall()
+                query = text(f"SELECT id_pacienti FROM {table_name}")
+                patient_ids = db.session.execute(query).fetchall()
+                patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
+
+                if patient_ids:
+                    patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
+                else:
+                    patients = []
     except OperationalError as e:
         flash('Database error occurred. Please try again later.', 'danger')
         patients = []

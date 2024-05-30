@@ -1,0 +1,90 @@
+.container {
+    max-width: 1000px;
+    margin: 50px auto;
+    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/cover;;
+    padding: 70px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+label {
+    color: #fff;
+    margin-right: 10px;
+    font-family: Roboto, 'Jost', sans-serif;
+    font-size: 20px;
+    align-content: center;
+}
+p{
+    color:#ffffff;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 2em;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 4px 4px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    margin-left:13px;
+    background-color: #5b38be;
+    color: #fff;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 4px 4px 4px 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #6d44b8;
+}
+
+.patient-info, .intersection-result {
+    background-color: rgba(247, 247, 255, 0.98);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 0;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.patient-info h2, .intersection-result h2 {
+    color: #5b38be;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    text-align: center;
+}
+
+.patient-info strong{
+    color:#5b38be;
+}
+.patient-info p, .intersection-result p, .intersection-result ul {
+    color: #1a1a1a;
+    font-size: 1.1em;
+    margin: 15px 30px;
+}
+
+.intersection-result ul {
+    padding-left: 20px;
+}
+
+.intersection-result li {
+    margin-bottom: 10px;
+}

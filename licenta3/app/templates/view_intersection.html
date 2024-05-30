@@ -33,22 +33,26 @@
     </nav>
     </header>
 
-     <div class="container">
+      <div class="container">
         <h1>View Intersection</h1>
         <form method="GET" action="{{ url_for('view_intersection') }}">
             <label for="search_query">CNP:</label>
-            <input type="text" id="search_query" name="search_query" required>
+            <input type="text" id="search_query" placeholder="Type CNP" name="search_query" required>
             <button type="submit">View Intersection</button>
         </form>
 
         {% if pacient %}
         <div class="patient-info">
-            <h2>Patient Information</h2>
-            <p><strong>Name:</strong> {{ pacient.nume }} {{ pacient.prenume }}</p>
-            <p><strong>CNP:</strong> {{ pacient.cnp }}</p>
-            <p><strong>Address:</strong> {{ pacient.adresa }}</p>
-            <p><strong>Email:</strong> {{ pacient.email }}</p>
-            <p><strong>Phone:</strong> {{ pacient.nr_telefon }}</p>
+            <h2><strong>Fisa medicala</strong></h2>
+            <p><strong>Nume:</strong> {{ pacient['nume'] }} {{ pacient['prenume'] }}</p>
+            <p><strong>CNP:</strong> {{ pacient['cnp'] }}</p>
+            <p><strong>Data Naștere:</strong> {{ pacient['data_nastere'] }}</p>
+            <p><strong>Varsta ultimului consult:</strong> {{ pacient['varsta'] }}</p>
+            <p><strong>Sex:</strong> {{ pacient['sex'] }}</p>
+            <p><strong>Stare de sănătate:</strong> {{ pacient['fisa_medicala'] }}</p>
+            <p><strong>Adresa:</strong> {{ pacient['adresa'] }}</p>
+            <p><strong>Email:</strong> {{ pacient['email'] }}</p>
+            <p><strong>Număr de telefon:</strong> {{ pacient['nr_telefon'] }}</p>
         </div>
         {% endif %}
 
@@ -61,12 +65,13 @@
                 {% endfor %}
             </ul>
         </div>
+        {% else %}
+                <p>Not found.</p>
         {% endif %}
     </div>
 
     <footer>
         <p>Copyright &copy; 2024 BiancaBojescu</p>
     </footer>
-
 </body>
 </html>
