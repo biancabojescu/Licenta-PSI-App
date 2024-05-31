@@ -5,10 +5,6 @@ from Crypto.Util.number import inverse
 from app.psi.server import decrypt
 
 
-def hash_function(y):
-    return int(hashlib.sha256(y.encode()).hexdigest(), 16)
-
-
 def generate_random_elements(NC):
     return secrets.randbelow(NC)
 

@@ -2,10 +2,6 @@ import pybloom_live
 from Crypto.PublicKey import RSA
 
 
-def gen_pv_rsa_key(n, exp):
-    return RSA.generate(n, e=exp)
-
-
 def decrypt(key, element):
     d, n = key.d, key.n
     return pow(element, d, n)

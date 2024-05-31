@@ -5,108 +5,18 @@ from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
 from app.criptatre_date import decrypt_data, private_key, encrypt_data, public_key
-from app.forms import LoginForm, RegistrationForm, AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
+from app.forms import AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
 from app.models import User, Institutie, Pacienti
-from werkzeug.security import generate_password_hash, check_password_hash
+
 from datetime import datetime
+
+from app.protocol_psi import see_intersection
 
 
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html', is_authenticated=session.get('is_authenticated', False))
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and user.check_password(form.password.data):
-            session['is_authenticated'] = True
-            session['role'] = user.role
-            session['profesie'] = user.profesie
-            return redirect(url_for('index'))
-        else:
-            flash('Invalid email or password.', 'error')
-    return render_template('login.html', title='Login', form=form)
-
-
-@app.route('/register', methods=['GET'])
-def register():
-    institutii = Institutie.query.all()
-    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
-
-    form = RegistrationForm()
-    form.hospital.choices = hospital_choices
-
-    return render_template('register.html', title='Register', form=form)
-
-
-@app.route('/logout')
-def logout():
-    user_id = session.get('user_id')
-    if user_id:
-        user = User.query.get(user_id)
-        if user:
-            user.is_auth = False
-            db.session.commit()
-    session.clear()
-    return redirect(url_for('index'))
-
-
-@app.route('/login_user', methods=['GET', 'POST'])
-def login_user():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.parola, form.password.data):
-            user.is_auth = True
-            db.session.commit()
-            session['is_authenticated'] = True
-            session['user_id'] = user.id
-            session['role'] = user.role
-            session['profesie'] = user.profesie
-            flash('Login successful!', 'success')
-            return redirect(url_for('index'))
-        else:
-            flash('Invalid email or password', 'danger')
-    return render_template('login.html', title='Login', form=form)
-
-
-@app.route('/register_user', methods=['POST'])
-def register_user():
-    form = RegistrationForm()
-    institutii = Institutie.query.all()
-    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
-    form.hospital.choices = hospital_choices
-
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
-
-        if not institutie:
-            flash('Selected hospital does not exist. Please choose a valid hospital.', 'error')
-            return redirect(url_for('register'))
-        user = User(
-            nume=form.last_name.data,
-            prenume=form.first_name.data,
-            email=form.email.data,
-            profesie=form.profession.data,
-            parola=hashed_password,
-            is_auth=False,
-            role='user',
-            id_institutie=institutie.id
-        )
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, registration successful!', 'success')
-        return redirect(url_for('login'))
-    else:
-        for fieldName, errorMessages in form.errors.items():
-            for err in errorMessages:
-                flash(f"{fieldName}: {err}", 'error')
-    return render_template('register.html', title='Register', form=form)
 
 
 @app.route('/services')
@@ -127,14 +37,16 @@ def add_patient():
         return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
 
     form = AddPatientForm()
-    institutii = Institutie.query.all()
-    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
+
+    user = User.query.get(session.get('user_id'))
+    institution_id = user.id_institutie
+    institution = Institutie.query.get(institution_id)
+    hospital_choices = [(institution.nume, institution.nume)]
     form.hospital.choices = hospital_choices
+    form.hospital.data = institution.nume
 
     if form.validate_on_submit():
         try:
-            institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
-
             # Criptarea datelor
             encrypted_cnp = encrypt_data(public_key, form.cnp.data)
             encrypted_fisa_medicala = encrypt_data(public_key, form.medical_record.data)
@@ -151,13 +63,13 @@ def add_patient():
                 nr_telefon=form.phone_number.data,
                 email=form.email.data,
                 adresa=encrypted_adresa,
-                id_institutie=institutie.id
+                id_institutie=institution_id
             )
 
             db.session.add(new_patient)
             db.session.commit()
 
-            table_name = f'pacienti_{form.hospital.data}'.replace(" ", "_").replace(".", "")
+            table_name = f'pacienti_{institution.nume}'.replace(" ", "_").replace(".", "")
             query = text(f"""
                 INSERT INTO {table_name} (nume, prenume, data_nastere, varsta, cnp, sex, fisa_medicala, nr_telefon, email, adresa, id_pacienti)
                 VALUES (:nume, :prenume, :data_nastere, :varsta, :cnp, :sex, :fisa_medicala, :nr_telefon, :email, :adresa, :id_pacienti)
@@ -205,14 +117,16 @@ def view_intersection():
     search_query = request.args.get('search_query', '')
     pacient = None
     intersection_result = []
+    not_found_message = "Search for a patient."
+    numele_spitalului = None
 
     user = User.query.get(session.get('user_id'))
     institution_id = user.id_institutie
     institution = Institutie.query.get(institution_id)
     table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+    numele_spitalului = institution.nume
 
     if search_query:
-        # Selectează toate CNP-urile din tabel
         query = text(f"SELECT id, cnp FROM {table_name}")
         results = db.session.execute(query).fetchall()
 
@@ -236,13 +150,16 @@ def view_intersection():
                         'email': pacient_data.email,
                         'adresa': decrypt_data(private_key, pacient_data.adresa),
                     }
+                    intersection_result = see_intersection(result.cnp, institution_id)
                     break
             except Exception as e:
                 logging.error(f"Error decrypting CNP: {e}")
                 continue
 
-    return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result)
+        if not pacient:
+            not_found_message = "Not found."
 
+    return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result, numele_spitalului=numele_spitalului, not_found_message=not_found_message)
 
 
 @app.route('/manage_patients', methods=['GET', 'POST'])
@@ -327,6 +244,8 @@ def update_patient(patient_id):
     patient = Pacienti.query.get_or_404(patient_id)
 
     form = UpdatePatientForm()
+
+
     if request.method == 'GET':
         form.last_name.data = patient.nume
         form.first_name.data = patient.prenume
@@ -435,85 +354,4 @@ def search_patient():
     return redirect(url_for('manage_patients', search_query=search_query))
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    if not session.get('is_authenticated') and session.get('role') != 'admin':
-        flash('You need to be logged in as an admin to access this page.', 'danger')
-        return redirect(url_for('login'))
 
-    search_query = request.args.get('search_query', '')
-
-    try:
-        if search_query:
-            users = User.query.filter(
-                (User.nume.ilike(f"%{search_query}%") | User.email.ilike(f"%{search_query}%")) & (User.role != 'admin')
-            ).all()
-        else:
-            users = User.query.filter(User.role != 'admin').all()
-    except OperationalError as e:
-        flash('Database error occurred. Please try again later.', 'danger')
-        users = []
-
-    return render_template('dashboard.html', users=users)
-
-
-@app.route('/update_user/<int:user_id>', methods=['GET', 'POST'])
-def update_user(user_id):
-    if not session.get('is_authenticated') or session.get('role') != 'admin':
-        flash('You need to be logged in as an admin to access this page.', 'danger')
-        return redirect(url_for('login'))
-
-    user = User.query.get_or_404(user_id)
-    form = UpdateUserForm()
-
-    institutii = Institutie.query.all()
-    hospital_choices = [(institutie.nume, institutie.nume) for institutie in institutii]
-    form.hospital.choices = hospital_choices
-
-    if request.method == 'GET':
-        form.last_name.data = user.nume
-        form.first_name.data = user.prenume
-        form.email.data = user.email
-        form.profession.data = user.profesie
-        form.hospital.data = Institutie.query.get(user.id_institutie).nume
-
-    if form.validate_on_submit():
-        try:
-            user.nume = form.last_name.data
-            user.prenume = form.first_name.data
-            user.email = form.email.data
-            user.profesie = form.profession.data
-
-            institutie = Institutie.query.filter_by(nume=form.hospital.data).first()
-            if not institutie:
-                flash('Selected hospital does not exist. Please choose a valid hospital.', 'error')
-                return redirect(url_for('update_user', user_id=user_id))
-
-            user.id_institutie = institutie.id
-            db.session.commit()
-            flash('User updated successfully!', 'success')
-        except Exception as e:
-            db.session.rollback()
-            flash('An error occurred while updating the user. Please try again.', 'danger')
-        return redirect(url_for('dashboard'))
-
-    return render_template('update_user.html', form=form, user_id=user_id)
-
-
-
-@app.route('/delete_user/<int:user_id>', methods=['POST'])
-def delete_user(user_id):
-    if not session.get('is_authenticated') and session.get('role') != 'admin':
-        flash('You need to be logged in as an admin to access this page.', 'danger')
-        return redirect(url_for('login'))
-
-    user = User.query.get_or_404(user_id)
-    try:
-        db.session.delete(user)
-        db.session.commit()
-        flash('User deleted successfully!', 'success')
-    except Exception as e:
-        db.session.rollback()
-        flash('An error occurred while deleting the user. Please try again.', 'danger')
-
-    return redirect(url_for('dashboard'))

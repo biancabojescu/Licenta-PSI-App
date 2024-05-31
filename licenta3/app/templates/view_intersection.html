@@ -43,7 +43,7 @@
 
         {% if pacient %}
         <div class="patient-info">
-            <h2><strong>Fisa medicala</strong></h2>
+            <h2><strong>Fisa medicala {{numele_spitalului}}</strong></h2>
             <p><strong>Nume:</strong> {{ pacient['nume'] }} {{ pacient['prenume'] }}</p>
             <p><strong>CNP:</strong> {{ pacient['cnp'] }}</p>
             <p><strong>Data Naștere:</strong> {{ pacient['data_nastere'] }}</p>
@@ -56,6 +56,13 @@
         </div>
         {% endif %}
 
+        {% if not pacient %}
+        <div class="not-found">
+            <p>{{ not_found_message }}</p>
+        </div>
+        {% endif %}
+
+        <br>
         {% if intersection_result %}
         <div class="intersection-result">
             <h2>Intersection Result</h2>
@@ -65,8 +72,6 @@
                 {% endfor %}
             </ul>
         </div>
-        {% else %}
-                <p>Not found.</p>
         {% endif %}
     </div>
 
