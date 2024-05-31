@@ -33,7 +33,10 @@ def add_patient():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta'] and session.get('role') != 'admin':
+    if session.get('role') == 'admin':
+        return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
+
+    if session.get('profesie') not in ['administrator', 'doctor', 'asistenta']:
         return render_template('error.html', message="Unauthorized access. You do not have permission to add patients.")
 
     form = AddPatientForm()
@@ -109,16 +112,16 @@ def view_intersection():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('role') == 'admin':
-        flash('You do not have permission to access this page.', 'danger')
-        return render_template('error.html',
-                               message="Unauthorized access. You do not have permission to see intersections.")
+    not_found_message = "Search for a patient."
+
+    if session.get('role') == 'admin' or session.get('profesie') not in ['administrator', 'doctor', 'asistenta']:
+        not_found_message = 'You do not have permission to access patients.'
+        return render_template('view_intersection.html', pacient=None, intersection_result=None,
+                               numele_spitalului=None, not_found_message=not_found_message)
 
     search_query = request.args.get('search_query', '')
     pacient = None
     intersection_result = []
-    not_found_message = "Search for a patient."
-    numele_spitalului = None
 
     user = User.query.get(session.get('user_id'))
     institution_id = user.id_institutie
@@ -150,7 +153,10 @@ def view_intersection():
                         'email': pacient_data.email,
                         'adresa': decrypt_data(private_key, pacient_data.adresa),
                     }
-                    intersection_result = see_intersection(result.cnp, institution_id)
+                    if session.get('profesie') not in ['administrator', 'doctor']:
+                        intersection_result = ['You do not have permission to see the intersection.']
+                    else:
+                        intersection_result = see_intersection(result.cnp, institution_id)
                     break
             except Exception as e:
                 logging.error(f"Error decrypting CNP: {e}")
@@ -159,7 +165,8 @@ def view_intersection():
         if not pacient:
             not_found_message = "Not found."
 
-    return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result, numele_spitalului=numele_spitalului, not_found_message=not_found_message)
+    return render_template('view_intersection.html', pacient=pacient, intersection_result=intersection_result,
+                           numele_spitalului=numele_spitalului, not_found_message=not_found_message)
 
 
 @app.route('/manage_patients', methods=['GET', 'POST'])
@@ -168,41 +175,37 @@ def manage_patients():
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
+    if session.get('role') == 'admin':
+        return render_template('error.html', message="Unauthorized access. You do not have permission to update or "
+                                                     "delete patients.")
+
     search_query = request.args.get('search_query', '')
 
     try:
-        if session.get('role') == 'admin':
-            if search_query:
-                patients = Pacienti.query.filter(
-                    Pacienti.nume.ilike(f"%{search_query}%") | Pacienti.cnp.ilike(f"%{search_query}%")
-                ).all()
+        user = User.query.get(session.get('user_id'))
+        institution_id = user.id_institutie
+        institution = Institutie.query.get(institution_id)
+        table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
+        if search_query:
+            institution_id_pacients = text(
+                f"SELECT id_pacienti FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
+            patient_ids = db.session.execute(institution_id_pacients,
+                                                {'search_query': f"%{search_query}%"}).fetchall()
+            patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
+
+            if patient_ids:
+                patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
             else:
-                patients = Pacienti.query.all()
+                patients = []
         else:
-            user = User.query.get(session.get('user_id'))
-            institution_id = user.id_institutie
-            institution = Institutie.query.get(institution_id)
-            table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
-            if search_query:
-                institution_id_pacients = text(
-                    f"SELECT id_pacienti FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
-                patient_ids = db.session.execute(institution_id_pacients,
-                                                 {'search_query': f"%{search_query}%"}).fetchall()
-                patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
+            query = text(f"SELECT id_pacienti FROM {table_name}")
+            patient_ids = db.session.execute(query).fetchall()
+            patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
 
-                if patient_ids:
-                    patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
-                else:
-                    patients = []
+            if patient_ids:
+                patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
             else:
-                query = text(f"SELECT id_pacienti FROM {table_name}")
-                patient_ids = db.session.execute(query).fetchall()
-                patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
-
-                if patient_ids:
-                    patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
-                else:
-                    patients = []
+                patients = []
 
         decrypted_patients = []
         for patient in patients:
@@ -241,10 +244,13 @@ def update_patient(patient_id):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
+    if session.get('role') == 'admin':
+        return render_template('error.html', message="Unauthorized access. You do not have permission to update "
+                                                     "patients.")
+
     patient = Pacienti.query.get_or_404(patient_id)
 
     form = UpdatePatientForm()
-
 
     if request.method == 'GET':
         form.last_name.data = patient.nume
@@ -324,7 +330,11 @@ def delete_patient(patient_id):
         flash('You need to be logged in to access this page.', 'danger')
         return redirect(url_for('login'))
 
-    if session.get('profesie') not in ['administrator', 'doctor'] and session.get('role') != 'admin':
+    if session.get('role') == 'admin':
+        return render_template('error.html', message="Unauthorized access. You do not have permission to delete "
+                                                     "patients.")
+
+    if session.get('profesie') not in ['administrator', 'doctor']:
         flash('You do not have permission to delete patients.', 'danger')
         return redirect(url_for('manage_patients'))
 
