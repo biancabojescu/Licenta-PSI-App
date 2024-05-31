@@ -36,16 +36,16 @@
         <form action="{{ url_for('update_user', user_id=user_id) }}" method="POST" class="update-user">
             {{ form.hidden_tag() }}
             <div>
-                {{ form.last_name(placeholder='Nume', required=True) }}
+                {{ form.last_name(placeholder='Last Name', required=True) }}
             </div>
             <div>
-                {{ form.first_name(placeholder='Prenume', required=True) }}
+                {{ form.first_name(placeholder='First Name', required=True) }}
             </div>
             <div>
                 {{ form.email(placeholder='Email', required=True) }}
             </div>
             <div>
-                {{ form.profession(placeholder='Profesie') }}
+                {{ form.profession(placeholder='Profession') }}
             </div>
             <div>
                 {{ form.hospital() }}

@@ -43,16 +43,16 @@
 
         {% if pacient %}
         <div class="patient-info">
-            <h2><strong>Fisa medicala {{numele_spitalului}}</strong></h2>
-            <p><strong>Nume:</strong> {{ pacient['nume'] }} {{ pacient['prenume'] }}</p>
+            <h2><strong>Medical record - {{numele_spitalului}}</strong></h2>
+            <p><strong>Name:</strong> {{ pacient['nume'] }} {{ pacient['prenume'] }}</p>
             <p><strong>CNP:</strong> {{ pacient['cnp'] }}</p>
-            <p><strong>Data Naștere:</strong> {{ pacient['data_nastere'] }}</p>
-            <p><strong>Varsta ultimului consult:</strong> {{ pacient['varsta'] }}</p>
+            <p><strong>Birthday:</strong> {{ pacient['data_nastere'] }}</p>
+            <p><strong>The age at the last consultation:</strong> {{ pacient['varsta'] }}</p>
             <p><strong>Sex:</strong> {{ pacient['sex'] }}</p>
-            <p><strong>Stare de sănătate:</strong> {{ pacient['fisa_medicala'] }}</p>
-            <p><strong>Adresa:</strong> {{ pacient['adresa'] }}</p>
+            <p><strong>Last consultation result:</strong> {{ pacient['fisa_medicala'] }}</p>
+            <p><strong>Address:</strong> {{ pacient['adresa'] }}</p>
             <p><strong>Email:</strong> {{ pacient['email'] }}</p>
-            <p><strong>Număr de telefon:</strong> {{ pacient['nr_telefon'] }}</p>
+            <p><strong>Phone number:</strong> {{ pacient['nr_telefon'] }}</p>
         </div>
         {% endif %}
 

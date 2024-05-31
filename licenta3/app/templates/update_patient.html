@@ -36,16 +36,16 @@
         <form action="{{ url_for('update_patient', patient_id=patient_id) }}" method="POST" class="update-form">
             {{ form.hidden_tag() }}
             <div>
-                 {{ form.last_name(placeholder='Nume', required=True) }}
+                 {{ form.last_name(placeholder='Last Name', required=True) }}
             </div>
             <div>
-                 {{ form.first_name(placeholder='Prenume', required=True) }}
+                 {{ form.first_name(placeholder='First Name', required=True) }}
             </div>
             <div>
-                 {{ form.birth_date(placeholder='Data Nașterii') }}
+                 {{ form.birth_date(placeholder='Birthday') }}
             </div>
             <div>
-                 {{ form.age(placeholder='Vârstă') }}
+                 {{ form.age(placeholder='The age at the last consultation') }}
             </div>
             <div>
                  {{ form.cnp(placeholder='CNP', required=True) }}
@@ -54,16 +54,16 @@
                 {{ form.sex(placeholder='Sex') }}
             </div>
             <div>
-                 {{ form.medical_record(placeholder='Fișă Medicală') }}
+                 {{ form.medical_record(placeholder='Last consultation result') }}
             </div>
             <div>
-                {{ form.phone_number(placeholder='Număr de telefon') }}
+                {{ form.phone_number(placeholder='Phone number') }}
             </div>
             <div>
               {{ form.email(placeholder='Email') }}
             </div>
             <div>
-                {{ form.address(placeholder='Adresa') }}
+                {{ form.address(placeholder='Address') }}
             </div>
             <div>
                 {{ form.submit() }}

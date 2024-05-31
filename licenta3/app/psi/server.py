@@ -1,5 +1,4 @@
 import pybloom_live
-from Crypto.PublicKey import RSA
 
 
 def decrypt(key, element):
