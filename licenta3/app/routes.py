@@ -119,7 +119,7 @@ def view_intersection():
         return render_template('view_intersection.html', pacient=None, intersection_result=None,
                                numele_spitalului=None, not_found_message=not_found_message)
 
-    search_query = request.args.get('search_query', '')
+    search_query = request.args.get('search_query', '').lower()
     pacient = None
     intersection_result = []
 
@@ -135,7 +135,7 @@ def view_intersection():
 
         for result in results:
             try:
-                decrypted_cnp = decrypt_data(private_key, result.cnp)
+                decrypted_cnp = decrypt_data(private_key, result.cnp).lower()
                 if decrypted_cnp == search_query:
                     pacient_id = result.id
                     pacient_query = text(f"SELECT * FROM {table_name} WHERE id = :id")
@@ -176,36 +176,33 @@ def manage_patients():
         return redirect(url_for('login'))
 
     if session.get('role') == 'admin':
-        return render_template('error.html', message="Unauthorized access. You do not have permission to update or "
-                                                     "delete patients.")
+        return render_template('error.html', message="Unauthorized access. You do not have permission to update or delete patients.")
 
-    search_query = request.args.get('search_query', '')
+    search_query = request.args.get('search_query', '').lower()
 
     try:
         user = User.query.get(session.get('user_id'))
         institution_id = user.id_institutie
         institution = Institutie.query.get(institution_id)
         table_name = f'pacienti_{institution.nume.replace(" ", "_").replace(".", "")}'
-        if search_query:
-            institution_id_pacients = text(
-                f"SELECT id_pacienti FROM {table_name} WHERE nume LIKE :search_query OR cnp LIKE :search_query")
-            patient_ids = db.session.execute(institution_id_pacients,
-                                                {'search_query': f"%{search_query}%"}).fetchall()
-            patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
 
-            if patient_ids:
-                patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
-            else:
-                patients = []
+        query = text(f"SELECT id_pacienti, nume, cnp FROM {table_name}")
+        results = db.session.execute(query).fetchall()
+
+        patient_ids = []
+        for result in results:
+            try:
+                decrypted_cnp = decrypt_data(private_key, result.cnp).lower()
+                if search_query in decrypted_cnp or search_query in result.nume.lower():
+                    patient_ids.append(result.id_pacienti)
+            except Exception as e:
+                logging.error(f"Error decrypting CNP: {e}")
+                continue
+
+        if patient_ids:
+            patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
         else:
-            query = text(f"SELECT id_pacienti FROM {table_name}")
-            patient_ids = db.session.execute(query).fetchall()
-            patient_ids = [pid[0] for pid in patient_ids]  # Accesare prin index
-
-            if patient_ids:
-                patients = Pacienti.query.filter(Pacienti.id.in_(patient_ids)).all()
-            else:
-                patients = []
+            patients = []
 
         decrypted_patients = []
         for patient in patients:
@@ -217,7 +214,7 @@ def manage_patients():
                 decrypted_patients.append({
                     'id': patient.id,
                     'nume': patient.nume,
-                    'prenume': patient.nume,
+                    'prenume': patient.prenume,
                     'data_nastere': patient.data_nastere,
                     'varsta': patient.varsta,
                     'cnp': decrypted_cnp,
