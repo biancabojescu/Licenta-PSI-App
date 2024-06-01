@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, session, flash, request
 from sqlalchemy.exc import OperationalError
 from app import app, db
 from app.forms import UpdateUserForm
-from app.models import User, Institutie, Pacienti
+from app.models import User, Institutie
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])

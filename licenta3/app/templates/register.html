@@ -55,6 +55,31 @@
             </form>
         </div>
     </div>
+
+    <div class="overlay" id="success-message">
+        <div class="overlay-content">
+            <h2>Congratulations, registration successful! Please check your email to confirm your registration.</h2>
+        </div>
+    </div>
+
+    <div class="overlay" id="error-message">
+        <div class="overlay-content">
+            <h2>There was a problem with your registration. Please try again.</h2>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            {% if session.get('show_success_message') %}
+                $('#success-message').fadeIn().delay(3000).fadeOut();
+                {{ session.pop('show_success_message') }}
+            {% elif session.get('show_error_message') %}
+                $('#error-message').fadeIn().delay(3000).fadeOut();
+                {{ session.pop('show_error_message') }}
+            {% endif %}
+        });
+    </script>
+
    <footer>
         <p>Copyright &copy; 2024 BiancaBojescu</p>
     </footer>

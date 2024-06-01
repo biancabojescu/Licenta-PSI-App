@@ -1,7 +1,8 @@
+from itsdangerous import Serializer, URLSafeTimedSerializer
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, text
 from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash
-from app import db
+from app import db, app
 
 
 class Institutie(db.Model):
@@ -29,10 +30,23 @@ class User(db.Model):
     is_auth = Column(Boolean, default=False)
     role = Column(String(50), default='user')
     id_institutie = Column(Integer, ForeignKey('institutii.id'))
+    email_confirmed = Column(Boolean, default=False)
     institutie = relationship("Institutie", back_populates="users")
 
     def check_password(self, password):
         return check_password_hash(self.parola, password)
+
+    def get_reset_password_token(self, expires_in=600):
+        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        return s.dumps(self.email, salt=app.config['SECURITY_PASSWORD_SALT'])
+    @staticmethod
+    def verify_reset_password_token(token):
+        s = Serializer(str(app.config['SECRET_KEY']))
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def __repr__(self):
         return f'<User {self.nume} {self.prenume}>'
@@ -57,6 +71,7 @@ class Pacienti(db.Model):
 
     def __repr__(self):
         return f'<Pacient id={self.id} nume={self.nume} prenume={self.prenume} data_nastere={self.data_nastere} varsta={self.varsta} cnp={self.cnp} sex={self.sex} fisa_medicala={self.fisa_medicala} nr_telefon={self.nr_telefon} email={self.email} adresa={self.adresa}>'
+
 
 def create_pacienti_tables():
     hospitals = Institutie.query.all()

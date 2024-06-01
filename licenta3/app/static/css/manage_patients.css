@@ -22,6 +22,9 @@ h1 {
     margin-bottom: 20px;
     color: #fff;
 }
+p {
+    color: #fff;
+}
 
 form {
     display: flex;
