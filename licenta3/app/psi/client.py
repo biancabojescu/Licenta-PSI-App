@@ -1,11 +1,15 @@
 import secrets
 from Crypto.Util.number import inverse
+from rsa.prime import gcd
 
 from app.psi.server import decrypt
 
 
 def generate_random_elements(NC):
-    return secrets.randbelow(NC)
+    while True:
+        r = secrets.randbelow(NC)
+        if gcd(r, NC) == 1:
+            return r
 
 
 def encrypt(key, element):
@@ -25,7 +29,7 @@ def generate_random_numbers(pb_key, NC_max=1024):
     return rand_nums
 
 
-def blind_batch(Y, rand_nums, n):
+def mascare_date(Y, rand_nums, n):
     A = []
     for y, rf in zip(Y, rand_nums):
         r_encrypt = rf[1]
@@ -33,7 +37,7 @@ def blind_batch(Y, rand_nums, n):
     return A
 
 
-def verify_batch(B, rand_nums, n):
+def intersection(B, rand_nums, n):
     S = []
     for b, rf in zip(B, rand_nums):
         r_inv = rf[0]

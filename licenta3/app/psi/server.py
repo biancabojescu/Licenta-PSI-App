@@ -16,18 +16,18 @@ def bloom_filter(pv_key, X):
     return bf
 
 
-def sign_batch(pv_key, A):
+def semneaza_datele(pv_key, A):
     B = []
     for a in A:
         B.append(decrypt(pv_key, a))
     return B
 
 
-def update_bloom_filter(bf, pv_key, P, X):
+def update_bf(bf, pv_key, P, X):
     for i in P:
         bf.add(decrypt(pv_key, X[i]))
 
 
-def insert_new_elements(bf, pv_key, U):
+def insert_elements_bf(bf, pv_key, U):
     for u in U:
         bf.add(decrypt(pv_key, u))
