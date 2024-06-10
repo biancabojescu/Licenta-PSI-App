@@ -1,4 +1,3 @@
-import hashlib
 from bitarray import bitarray
 
 
@@ -11,8 +10,14 @@ class BloomFilter:
 
     def _hashes(self, item):
         item_str = str(item)
-        return [int(hashlib.md5((item_str + str(i)).encode('utf-8')).hexdigest(), 16) % self.size for i in
-                range(self.hash_count)]
+        hash_values = []
+        for i in range(self.hash_count):
+            # Hash simplu: suma și multiplicarea caracterelor cu un offset
+            hash_value = 0
+            for char in item_str:
+                hash_value = (hash_value * 31 + ord(char) + i) % self.size
+            hash_values.append(hash_value)
+        return hash_values
 
     def add(self, item):
         for hash_value in self._hashes(item):
