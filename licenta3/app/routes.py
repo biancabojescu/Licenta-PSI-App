@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, session, flash, request
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
-from app.criptatre_date import decrypt_data, private_key, encrypt_data, public_key
+from app.criptatre_date import decrypt_data, private_key, public_key, encrypt_data
 from app.forms import AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
 from app.models import User, Institutie, Pacienti
 
@@ -104,7 +104,6 @@ def add_patient():
             return redirect(url_for('add_patient'))
 
     return render_template('add_patient.html', form=form)
-
 
 @app.route('/view_intersection', methods=['GET', 'POST'])
 def view_intersection():
