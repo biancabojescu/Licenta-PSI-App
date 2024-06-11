@@ -1,37 +1,39 @@
 import base64
 import os
-from Crypto.Util.number import getPrime, inverse, long_to_bytes, long_to_bytes
+from Crypto.Util.number import getPrime
 from Crypto.PublicKey import RSA
+from app.psi.functii_utile import mod_inverse, extended_gcd
 
 
 def generate_rsa_keys(private_key_path, public_key_path, n_bits=2048, exponent=65537):
-    # Generăm două prime mari p și q
     p = getPrime(n_bits // 2)
     q = getPrime(n_bits // 2)
 
-    # Calculăm n și phi(n)
     n = p * q
     phi = (p - 1) * (q - 1)
+    print(f"Calculated n and phi:\nn = {n}\nphi = {phi}")
 
-    # Calculăm cheia publică e și cheia privată d
     e = exponent
-    d = inverse(e, phi)
+    d = mod_inverse(e, phi)
 
-    # Calculăm CRT params
-    dP = d % (p - 1)
-    dQ = d % (q - 1)
-    qInv = inverse(q, p)
+    qInv = mod_inverse(p, q)
 
-    # Exportăm cheile
-    key = RSA.construct((n, e, d, p, q, dP, dQ, qInv))
-    private_key = key.export_key()
-    public_key = key.publickey().export_key()
+    try:
+        key = RSA.construct((n, e, d, p, q, qInv))
+        private_key = key.export_key()
+        public_key = key.publickey().export_key()
+        print("RSA key construction successful.")
+    except ValueError as ve:
+        print(f"RSA key construction failed: {ve}")
+        raise
 
     with open(private_key_path, "wb") as priv_file:
         priv_file.write(private_key)
+        print(f"Private key saved to {private_key_path}")
 
     with open(public_key_path, "wb") as pub_file:
         pub_file.write(public_key)
+        print(f"Public key saved to {public_key_path}")
 
 
 private_key_path = ("C:/Users/bianc/OneDrive/Desktop/Facultate/Anul3/Licenta/Licenta-PSI-App/licenta3/app"
@@ -44,9 +46,11 @@ if not os.path.exists(private_key_path) or not os.path.exists(public_key_path):
 
 with open(private_key_path, "rb") as priv_file:
     private_key = RSA.import_key(priv_file.read())
+    print("Private key imported successfully.")
 
 with open(public_key_path, "rb") as pub_file:
     public_key = RSA.import_key(pub_file.read())
+    print("Public key imported successfully.")
 
 
 def crt_decrypt(private_key, encrypted_data):
@@ -74,7 +78,7 @@ def decrypt_data(private_key, encrypted_data):
         try:
             decrypted_text = decrypted_data.decode('utf-8')
             return decrypted_text
-        except UnicodeDecodeError as e:
+        except UnicodeDecodeError:
             raise ValueError("Decrypted data is not valid UTF-8")
     except Exception as e:
         raise e
@@ -87,4 +91,3 @@ def encrypt_data(public_key, data):
     encrypted_bytes = encrypted_int.to_bytes((public_key.n.bit_length() + 7) // 8, byteorder='big')
     encrypted_b64 = base64.b64encode(encrypted_bytes).decode('utf-8')
     return encrypted_b64
-

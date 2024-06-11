@@ -5,7 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
 from app.criptatre_date import decrypt_data, private_key, public_key, encrypt_data
-from app.forms import AddPatientForm, SearchForm, UpdatePatientForm, UpdateUserForm
+from app.forms import AddPatientForm, UpdatePatientForm
 from app.models import User, Institutie, Pacienti
 
 from datetime import datetime
@@ -105,6 +105,7 @@ def add_patient():
 
     return render_template('add_patient.html', form=form)
 
+
 @app.route('/view_intersection', methods=['GET', 'POST'])
 def view_intersection():
     if not session.get('is_authenticated'):
@@ -175,7 +176,8 @@ def manage_patients():
         return redirect(url_for('login'))
 
     if session.get('role') == 'admin':
-        return render_template('error.html', message="Unauthorized access. You do not have permission to update or delete patients.")
+        return render_template('error.html',
+                               message="Unauthorized access. You do not have permission to update or delete patients.")
 
     search_query = request.args.get('search_query', '').lower()
 
@@ -358,6 +360,3 @@ def delete_patient(patient_id):
 def search_patient():
     search_query = request.form.get('search_query')
     return redirect(url_for('manage_patients', search_query=search_query))
-
-
-
