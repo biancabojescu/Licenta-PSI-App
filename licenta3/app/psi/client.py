@@ -1,14 +1,28 @@
 import secrets
-from Crypto.Util.number import inverse
-from rsa.prime import gcd
-
 from app.psi.server import decrypt
+
+
+def extended_gcd(a, b):
+    x0, x1, y0, y1 = 1, 0, 0, 1
+    while b != 0:
+        q, a, b = a // b, b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    return a, x0, y0
+
+
+def mod_inverse(a, m):
+    gcd, x, _ = extended_gcd(a, m)
+    if gcd != 1:
+        raise ValueError(f"No modular inverse for {a} under modulo {m}")
+    return x % m
 
 
 def generate_random_elements(NC):
     while True:
         r = secrets.randbelow(NC)
-        if gcd(r, NC) == 1:
+        gcd, _, _ = extended_gcd(r, NC)
+        if gcd == 1:
             return r
 
 
@@ -22,7 +36,7 @@ def generate_random_numbers(pb_key, NC_max=1024):
 
     for _ in range(NC_max):
         r = generate_random_elements(pb_key.n)
-        r_inv = inverse(r, pb_key.n)
+        r_inv = mod_inverse(r, pb_key.n)
         r_encrypt = encrypt(pb_key, r)
         rand_nums.append((r_inv, r_encrypt))
 

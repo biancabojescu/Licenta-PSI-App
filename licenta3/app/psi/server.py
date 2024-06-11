@@ -1,11 +1,51 @@
-from bitarray import bitarray
+class BitArray:
+    def __init__(self, size):
+        self.size = size
+        self.array = [0] * size
+
+    def set(self, index):
+        if 0 <= index < self.size:
+            self.array[index] = 1
+        else:
+            raise IndexError("Index out of range")
+
+    def clear(self, index):
+        if 0 <= index < self.size:
+            self.array[index] = 0
+        else:
+            raise IndexError("Index out of range")
+
+    def get(self, index):
+        if 0 <= index < self.size:
+            return self.array[index]
+        else:
+            raise IndexError("Index out of range")
+
+    def setall(self, value):
+        if value not in [0, 1]:
+            raise ValueError("Value must be 0 or 1")
+        self.array = [value] * self.size
+
+    def __getitem__(self, index):
+        return self.get(index)
+
+    def __setitem__(self, index, value):
+        if value not in [0, 1]:
+            raise ValueError("Value must be 0 or 1")
+        if 0 <= index < self.size:
+            self.array[index] = value
+        else:
+            raise IndexError("Index out of range")
+
+    def __repr__(self):
+        return ''.join(map(str, self.array))
 
 
 class BloomFilter:
     def __init__(self, size, hash_count):
         self.size = size
         self.hash_count = hash_count
-        self.bit_array = bitarray(size)
+        self.bit_array = BitArray(size)
         self.bit_array.setall(0)
 
     def _hashes(self, item):
@@ -21,7 +61,7 @@ class BloomFilter:
 
     def add(self, item):
         for hash_value in self._hashes(item):
-            self.bit_array[hash_value] = True
+            self.bit_array[hash_value] = 1
 
     def __contains__(self, item):
         return all(self.bit_array[hash_value] for hash_value in self._hashes(item))
