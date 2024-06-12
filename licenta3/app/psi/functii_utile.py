@@ -10,7 +10,7 @@ def extended_gcd(a, b):
 def mod_inverse(a, m):
     gcd, x, _ = extended_gcd(a, m)
     if gcd != 1:
-        raise ValueError(f"No modular inverse for {a} under modulo {m}")
+        raise ValueError(f"Nu există un invers modular pentru {a} mod {m}")
     return x % m
 
 
@@ -39,7 +39,7 @@ class BitArray:
 
     def setall(self, value):
         if value not in [0, 1]:
-            raise ValueError("Value must be 0 or 1")
+            raise ValueError("Valoarea trebuie sa fie 1 sau 0")
         self.array = [value] * self.size
 
     def __getitem__(self, index):
@@ -47,7 +47,7 @@ class BitArray:
 
     def __setitem__(self, index, value):
         if value not in [0, 1]:
-            raise ValueError("Value must be 0 or 1")
+            raise ValueError("Valoarea trebuie sa fie 1 sau 0")
         if 0 <= index < self.size:
             self.array[index] = value
         else:
@@ -62,7 +62,6 @@ class BloomFilter:
         self.size = size
         self.hash_count = hash_count
         self.bit_array = BitArray(size)
-        self.bit_array.setall(0)
 
     def _hashes(self, item):
         item_str = str(item)

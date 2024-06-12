@@ -2,7 +2,7 @@ import base64
 import os
 from Crypto.Util.number import getPrime
 from Crypto.PublicKey import RSA
-from app.psi.functii_utile import mod_inverse, extended_gcd
+from app.psi.functii_utile import mod_inverse
 
 
 def generate_rsa_keys(private_key_path, public_key_path, n_bits=2048, exponent=65537):
@@ -11,29 +11,25 @@ def generate_rsa_keys(private_key_path, public_key_path, n_bits=2048, exponent=6
 
     n = p * q
     phi = (p - 1) * (q - 1)
-    print(f"Calculated n and phi:\nn = {n}\nphi = {phi}")
 
     e = exponent
     d = mod_inverse(e, phi)
 
-    qInv = mod_inverse(p, q)
+    pInv = mod_inverse(p, q)
 
     try:
-        key = RSA.construct((n, e, d, p, q, qInv))
+        key = RSA.construct((n, e, d, p, q, pInv))
         private_key = key.export_key()
         public_key = key.publickey().export_key()
-        print("RSA key construction successful.")
     except ValueError as ve:
-        print(f"RSA key construction failed: {ve}")
+        print(f"Eroare la generarea cheii RSA: {ve}")
         raise
 
     with open(private_key_path, "wb") as priv_file:
         priv_file.write(private_key)
-        print(f"Private key saved to {private_key_path}")
 
     with open(public_key_path, "wb") as pub_file:
         pub_file.write(public_key)
-        print(f"Public key saved to {public_key_path}")
 
 
 private_key_path = ("C:/Users/bianc/OneDrive/Desktop/Facultate/Anul3/Licenta/Licenta-PSI-App/licenta3/app"
@@ -46,11 +42,9 @@ if not os.path.exists(private_key_path) or not os.path.exists(public_key_path):
 
 with open(private_key_path, "rb") as priv_file:
     private_key = RSA.import_key(priv_file.read())
-    print("Private key imported successfully.")
 
 with open(public_key_path, "rb") as pub_file:
     public_key = RSA.import_key(pub_file.read())
-    print("Public key imported successfully.")
 
 
 def crt_decrypt(private_key, encrypted_data):
@@ -59,11 +53,11 @@ def crt_decrypt(private_key, encrypted_data):
     q = private_key.q
     dP = private_key.d % (p - 1)
     dQ = private_key.d % (q - 1)
-    qInv = private_key.u
+    pInv = private_key.u
 
     m1 = pow(encrypted_data, dP, p)
     m2 = pow(encrypted_data, dQ, q)
-    h = (qInv * (m1 - m2)) % p
+    h = (pInv * (m1 - m2)) % p
     m = m2 + h * q
     return m
 
@@ -79,7 +73,7 @@ def decrypt_data(private_key, encrypted_data):
             decrypted_text = decrypted_data.decode('utf-8')
             return decrypted_text
         except UnicodeDecodeError:
-            raise ValueError("Decrypted data is not valid UTF-8")
+            raise ValueError("Datele decriptate nu sunt valide!")
     except Exception as e:
         raise e
 

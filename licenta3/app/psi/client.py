@@ -11,6 +11,7 @@ def generate_random_elements(NC):
         if gcd == 1:
             return r
 
+
 def encrypt(key, element):
     e, n = key.e, key.n
     return pow(element, e, n)
