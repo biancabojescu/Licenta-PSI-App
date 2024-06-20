@@ -8,7 +8,7 @@ from app.psi.client import generate_random_numbers, mascare_date, intersection
 from app.psi.server import bloom_filter, semneaza_datele
 
 
-def see_intersection(cnp_encrypt, user_institution_id, size=1024):
+def see_intersection(cnp_encrypt, user_institution_id):
     start_time = time.time()
     intersected_hospitals = []
 
