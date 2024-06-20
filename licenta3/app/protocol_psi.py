@@ -41,6 +41,6 @@ def see_intersection(cnp_encrypt, user_institution_id):
         raise e
 
     end_time = time.time()
-    print(f"see_intersection execution time: {end_time - start_time} seconds")
+    print(f"Timpul total de execuție al protocolului RSA-PSI: {end_time - start_time} seconds")
 
     return intersected_hospitals
