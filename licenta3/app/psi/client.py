@@ -1,4 +1,5 @@
 import secrets
+import time
 
 from app.psi.functii_utile import extended_gcd, mod_inverse
 from app.psi.server import decrypt
@@ -18,6 +19,7 @@ def encrypt(key, element):
 
 
 def generate_random_numbers(pb_key, NC_max=1024):
+    start_time = time.time()
     rand_nums = []
 
     for _ in range(NC_max):
@@ -26,22 +28,32 @@ def generate_random_numbers(pb_key, NC_max=1024):
         r_encrypt = encrypt(pb_key, r)
         rand_nums.append((r_inv, r_encrypt))
 
+    end_time = time.time()  # end timing
+    print(f"generate_random_numbers execution time: {end_time - start_time} seconds")
     return rand_nums
 
 
 def mascare_date(Y, rand_nums, n):
+    start_time = time.time()  # start timing
     A = []
     for y, rf in zip(Y, rand_nums):
         r_encrypt = rf[1]
         A.append((r_encrypt * y) % n)
+
+    end_time = time.time()  # end timing
+    print(f"mascare_date execution time: {end_time - start_time} seconds")
     return A
 
 
 def intersection(B, rand_nums, n):
+    start_time = time.time()  # start timing
     S = []
     for b, rf in zip(B, rand_nums):
         r_inv = rf[0]
         S.append((b * r_inv) % n)
+
+    end_time = time.time()  # end timing
+    print(f"intersection execution time: {end_time - start_time} seconds")
     return S
 
 
@@ -53,5 +65,9 @@ def generate_update_positions(n, NU_max=100):
 
 
 def modify_bloom_filter(bf, P, pv_key, U):
+    start_time = time.time()  # start timing
     for i in P:
         bf.add(decrypt(pv_key, U[i]))
+
+    end_time = time.time()  # end timing
+    print(f"modify_bloom_filter execution time: {end_time - start_time} seconds")

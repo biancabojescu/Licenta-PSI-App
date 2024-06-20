@@ -47,6 +47,7 @@ def add_patient():
     hospital_choices = [(institution.nume, institution.nume)]
     form.hospital.choices = hospital_choices
     form.hospital.data = institution.nume
+    print(form.hospital.data)
 
     if form.validate_on_submit():
         try:

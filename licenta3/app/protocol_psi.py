@@ -1,3 +1,4 @@
+import time
 from sqlalchemy import text
 from app import db
 from app.criptatre_date import decrypt_data, private_key, public_key
@@ -8,6 +9,7 @@ from app.psi.server import bloom_filter, semneaza_datele
 
 
 def see_intersection(cnp_encrypt, user_institution_id):
+    start_time = time.time()  # start timing
     intersected_hospitals = []
 
     try:
@@ -32,10 +34,13 @@ def see_intersection(cnp_encrypt, user_institution_id):
 
             for s in S:
                 if s in bf:
-                    intersected_hospitals.append(institution.nume)
+                    intersected_hospitals.append(f"{institution.nume} - {institution.adresa}")
                     break
 
     except Exception as e:
         raise e
+
+    end_time = time.time()  # end timing
+    print(f"see_intersection execution time: {end_time - start_time} seconds")
 
     return intersected_hospitals
