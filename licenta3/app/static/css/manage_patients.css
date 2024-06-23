@@ -1,5 +1,3 @@
-
-
 .container {
     max-width: 900px;
     margin: 50px auto;
@@ -41,7 +39,7 @@ input[type="text"] {
 }
 
 button[type="submit"] {
-    margin-left:13px;
+    margin-left: 13px;
     background-color: #5b38be;
     color: #fff;
     padding: 10px 10px;
@@ -105,4 +103,33 @@ button[type="submit"]:hover {
 
 #patient-list li form button:hover {
     background-color: #6d44b8;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+    }
+
+    button[type="submit"] {
+        margin-top: 10px;
+    }
+
+    #patient-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #patient-list li form {
+        width: 100%;
+    }
+
+    #patient-list li form button {
+        width: 100%;
+        margin-top: 5px;
+    }
 }

@@ -17,15 +17,11 @@ body {
   min-height: 100vh;
 }
 
-
-
-
-body {
-  padding: 0;
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 80px - 40px); /* ajustează înălțimea corpului pentru a include header și footer */
+  height: calc(100vh - 80px - 40px); /* ajustează înălțimea containerului pentru a include header și footer */
 }
 
 .main {

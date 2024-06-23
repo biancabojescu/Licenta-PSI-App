@@ -1,9 +1,27 @@
-body {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 92vh;
+  height: calc(100vh - 80px - 40px); /* ajustează înălțimea containerului pentru a include header și footer */
 }
 
 .main {
@@ -91,7 +109,6 @@ button:hover {
   width: 0;
 }
 
-/* Crează un nou box pentru checkbox */
 .slider {
   position: absolute;
   top: 0;
@@ -103,12 +120,10 @@ button:hover {
   transition: .4s;
 }
 
-/* Când inputul este verificat, schimbă culoarea slider-ului */
 .checkbox-label input:checked + .slider {
   background-color: #5b38be;
 }
 
-/* Stil pentru partea care se mișcă a slider-ului */
 .slider:before {
   position: absolute;
   content: "";
@@ -121,7 +136,6 @@ button:hover {
   border-radius: 50%;
 }
 
-/* Mișcă sliderul la verificare */
 .checkbox-label input:checked + .slider:before {
   transform: translateX(14px);
 }
@@ -146,4 +160,62 @@ button:hover {
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 20px;
+  }
+
+  header .logo {
+    margin-bottom: 10px;
+  }
+
+  header ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+  }
+
+  .main {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+  }
+
+  label {
+    font-size: 1.8em;
+    margin: 30px;
+  }
+
+  input, button, .register-btn {
+    width: 90%;
+    height: 40px;
+  }
+
+  .signup {
+    border-radius: 20% / 5%;
+    transform: translateY(-100px);
+  }
+
+  .signup label {
+    transform: scale(0.8);
+  }
+
+  #chk:checked ~ .signup {
+    transform: translateY(-400px);
+  }
+
+  #chk:checked ~ .signup label {
+    transform: scale(1);
+  }
+
+  #chk:checked ~ .login label {
+    transform: scale(0.8);
+  }
 }

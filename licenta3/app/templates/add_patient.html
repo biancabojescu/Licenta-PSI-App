@@ -32,7 +32,7 @@
             </ul>
         </nav>
     </header>
-
+    <div class="container">
     <div class="form-container">
         <form action="{{ url_for('add_patient') }}" method="POST" id="add-patient-form">
             {{ form.hidden_tag() }}
@@ -86,6 +86,10 @@
             <h2>There was a problem or the patient already exists in the database!</h2>
         </div>
     </div>
+    </div>
+    <footer>
+        <p>Copyright &copy; 2024 BiancaBojescu</p>
+    </footer>
 
     <script>
         $(document).ready(function() {
@@ -98,8 +102,6 @@
             {% endif %}
         });
     </script>
-    <footer>
-        <p>Copyright &copy; 2024 BiancaBojescu</p>
-    </footer>
+
 </body>
 </html>

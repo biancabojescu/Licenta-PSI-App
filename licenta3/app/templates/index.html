@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="../static/css/index.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
    <header>
     <div class="logo">
@@ -33,41 +32,43 @@
     </nav>
     </header>
 
-    <div class="slideshow-container">
-        <div class="mySlides fade">
-            <img src="../static/images/banner1.jpg" style="width:100%" alt="Banner">
-        </div>
-
-        <div class="mySlides fade">
-            <img src="../static/images/banner2.jpg" style="width:100%" alt="Banner">
-        </div>
-
-        <div class="mySlides fade">
-            <img src="../static/images/banner3.jpg" style="width:100%" alt="Banner">
-        </div>
-    </div>
-    <br>
-   <div style="text-align:center">
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
-    </div>
-
-   <section class="intro-section">
     <div class="container">
-        <h1>Welcome to HealthShare</h1>
-        <p>HealthShare is an innovative platform that facilitates secure and efficient exchange of medical information between various institutions and professionals in the healthcare field. With the help of HealthShare, medical institutions can collaborate in real-time to provide quality and coordinated medical care for patients. </p>
-        {% if session.is_authenticated %}
-            <h2>Access more information!</h2>
-            <a href="{{ url_for('services') }}" class="login-button">Access Services</a>
-        {% else %}
-            <h2>To access more information, please log in!</h2>
-            <a href="{{ url_for('login') }}" class="login-button">Login</a>
-        {% endif %}
-    </div>
-</section>
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="../static/images/banner1.jpg" style="width:100%" alt="Banner">
+            </div>
 
-   <footer>
+            <div class="mySlides fade">
+                <img src="../static/images/banner2.jpg" style="width:100%" alt="Banner">
+            </div>
+
+            <div class="mySlides fade">
+                <img src="../static/images/banner3.jpg" style="width:100%" alt="Banner">
+            </div>
+        </div>
+        <br>
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+
+        <section class="intro-section">
+            <div class="container">
+                <h1>Welcome to HealthShare</h1>
+                <p>HealthShare is an innovative platform that facilitates secure and efficient exchange of medical information between various institutions and professionals in the healthcare field. With the help of HealthShare, medical institutions can collaborate in real-time to provide quality and coordinated medical care for patients. </p>
+                {% if session.is_authenticated %}
+                    <h2>Access more information!</h2>
+                    <a href="{{ url_for('services') }}" class="login-button">Access Services</a>
+                {% else %}
+                    <h2>To access more information, please log in!</h2>
+                    <a href="{{ url_for('login') }}" class="login-button">Login</a>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <footer>
         <p>Copyright &copy; 2024 BiancaBojescu</p>
     </footer>
 

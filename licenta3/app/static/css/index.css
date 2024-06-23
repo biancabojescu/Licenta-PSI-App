@@ -6,6 +6,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
 }
+
 footer {
   position: relative;
 }
@@ -114,19 +115,45 @@ a, a:visited, a:hover, a:active {
   }
 }
 
+@media screen and (max-width: 480px) {
+  .prev, .next {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .intro-section {
+    padding: 15px 5px; /* Ajustează padding-ul pentru ecrane foarte mici */
+  }
+
+  .intro-section h1 {
+    font-size: 1.2em; /* Ajustează dimensiunea fontului */
+  }
+
+  .intro-section p {
+    font-size: 12px; /* Ajustează dimensiunea fontului */
+  }
+
+  .login-button {
+    padding: 8px 16px; /* Ajustează padding-ul butonului */
+    font-size: 0.9em; /* Ajustează dimensiunea fontului */
+  }
+}
+
 /* Stiluri pentru secțiunea de introducere */
 .intro-section {
-  padding: 50px 10px;
+  padding: 20px 10px; /* Redus padding-ul pentru a face secțiunea mai compactă */
   text-align: center;
   background: #ffffff;
   color: #333;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adăugăm o umbră */
+  margin-top: 38px; /* Adaugă margin-top pentru a împinge secțiunea în jos */
 }
 
 .intro-section h1 {
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Redus margin-ul de jos pentru a face secțiunea mai compactă */
   color: #5b38be;
 }
+
 h2 {
   color: #5b38be;
 }
@@ -134,13 +161,13 @@ h2 {
 .intro-section p {
   font-size: 16px;
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Redus margin-ul de jos pentru a face secțiunea mai compactă */
 }
 
 .login-button {
   display: inline-block;
-  margin: 20px auto;
-  padding: 15px 30px;
+  margin: 10px auto; /* Redus margin-ul pentru a face secțiunea mai compactă */
+  padding: 10px 20px;
   background: #5b38be;
   color: #fff;
   text-decoration: none;
@@ -153,4 +180,3 @@ h2 {
 .login-button:hover {
   background: #271759;
 }
-
