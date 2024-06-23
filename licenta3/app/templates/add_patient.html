@@ -17,17 +17,22 @@
                 <span class="logo-text">HealthShare</span>
             </a>
         </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <nav>
-            <ul class="navigation" style="list-style: none; display: flex; margin: 0; padding: 0;">
-                <li style="padding: 0 15px;"><a href="{{ url_for('index') }}">Home</a></li>
-                <li style="padding: 0 15px;"><a href="{{ url_for('services') }}">Services</a></li>
+            <ul id="menu" class="navigation">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('services') }}">Services</a></li>
                 {% if session.is_authenticated %}
                     {% if session.role == 'admin' %}
-                        <li style="padding: 0 15px;"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
                     {% endif %}
-                    <li style="padding: 0 15px;"><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
-                    <li style="padding: 0 15px;"><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -102,6 +107,6 @@
             {% endif %}
         });
     </script>
-
+<script type="text/javascript" src="../static/javascript/header_menu.js"></script>
 </body>
 </html>

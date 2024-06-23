@@ -1,11 +1,12 @@
 .container {
     max-width: 1000px;
     margin: 50px auto;
-    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/cover;;
+    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/cover;
     padding: 70px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
+    box-sizing: border-box;
 }
 
 label {
@@ -15,9 +16,11 @@ label {
     font-size: 20px;
     align-content: center;
 }
-p{
-    color:#ffffff;
+
+p {
+    color: #ffffff;
 }
+
 h1 {
     text-align: center;
     margin-bottom: 20px;
@@ -28,6 +31,7 @@ h1 {
 form {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
@@ -35,17 +39,18 @@ input[type="text"] {
     width: 70%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px 4px 4px 4px;
+    border-radius: 4px;
     font-size: 16px;
+    box-sizing: border-box;
 }
 
 button[type="submit"] {
-    margin-left:13px;
+    margin-left: 13px;
     background-color: #5b38be;
     color: #fff;
     padding: 10px 10px;
     border: none;
-    border-radius: 4px 4px 4px 4px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 16px;
@@ -72,9 +77,10 @@ button[type="submit"]:hover {
     text-align: center;
 }
 
-.patient-info strong{
-    color:#5b38be;
+.patient-info strong {
+    color: #5b38be;
 }
+
 .patient-info p, .intersection-result p, .intersection-result ul {
     color: #1a1a1a;
     font-size: 1.1em;
@@ -87,4 +93,85 @@ button[type="submit"]:hover {
 
 .intersection-result li {
     margin-bottom: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .container {
+        padding: 50px 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .patient-info, .intersection-result {
+        padding: 20px 10px;
+    }
+
+    .patient-info p, .intersection-result p, .intersection-result ul {
+        margin: 15px 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .patient-info h2, .intersection-result h2 {
+        font-size: 1.4em;
+    }
+
+    input[type="text"] {
+        font-size: 14px;
+    }
+
+    button[type="submit"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .patient-info p, .intersection-result p, .intersection-result ul {
+        font-size: 1em;
+        margin: 10px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 5px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    .patient-info h2, .intersection-result h2 {
+        font-size: 1.2em;
+    }
+
+    input[type="text"] {
+        font-size: 12px;
+    }
+
+    button[type="submit"] {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .patient-info p, .intersection-result p, .intersection-result ul {
+        font-size: 0.9em;
+        margin: 5px 2px;
+    }
 }

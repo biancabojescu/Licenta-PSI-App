@@ -4,7 +4,6 @@ body {
     margin: 0;
     padding: 0;
 }
-
 header {
     background-color: #5b38be;
     padding: 20px;
@@ -137,4 +136,115 @@ button[type="submit"]:hover {
 
 #user-list li form button:hover {
     background-color: #6d44b8;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .container {
+        width: 90%;
+        padding: 40px;
+        margin: 20px auto;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    #user-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #user-list li span {
+        margin-bottom: 10px;
+    }
+
+    #user-list li form button {
+        margin: 5px 0 0 0;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+
+    .container {
+        width: 90%;
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    #user-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #user-list li span {
+        margin-bottom: 10px;
+    }
+
+    #user-list li form button {
+        margin: 5px 0 0 0;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 5px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+    }
+
+    button[type="submit"] {
+        padding: 8px 16px;
+    }
+
+    #user-list li {
+        padding: 8px;
+    }
+
+    #user-list li form button {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
 }

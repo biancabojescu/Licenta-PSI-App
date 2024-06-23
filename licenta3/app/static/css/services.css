@@ -3,8 +3,8 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    padding: 100px 20px; /* Mai mult spațiu de padding în partea superioară */
-    margin-top: 80px; /* Adaugăm un margin-top pentru a împinge cardurile mai jos */
+    padding: 100px 20px;
+    margin-top: 80px;
 }
 
 .card {
@@ -12,9 +12,11 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: hidden;
-    max-width: 400px; /* Mărim lățimea maximă a cardurilor */
+    max-width: 400px;
     text-align: center;
     transition: transform 0.3s;
+    flex: 1 1 calc(33.333% - 40px);
+    margin: 10px;
 }
 
 .card:hover {
@@ -23,26 +25,26 @@
 
 .card img {
     width: 100%;
-    height: 300px; /* Mărim înălțimea imaginilor */
+    height: 300px;
     object-fit: cover;
 }
 
 .card h3 {
     margin: 20px 0;
-    font-size: 1.8em; /* Mărim font-size-ul titlului */
+    font-size: 1.8em;
     color: #333;
 }
 
 .card p {
     padding: 0 20px;
-    font-size: 1.2em; /* Mărim font-size-ul textului */
+    font-size: 1.2em;
     color: #777;
 }
 
 .card a {
     display: inline-block;
-    margin: 20px 0 30px; /* Adăugăm un margin-bottom mai mare pentru aliniere */
-    padding: 15px 30px; /* Mărim padding-ul butonului */
+    margin: 20px 0 30px;
+    padding: 15px 30px;
     background: #5b38be;
     color: #fff;
     text-decoration: none;
@@ -52,4 +54,38 @@
 
 .card a:hover {
     background: #271759;
+}
+
+@media (max-width: 1024px) {
+    .card {
+        flex: 1 1 calc(50% - 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .services-container {
+        padding: 50px 10px;
+    }
+
+    .card {
+        flex: 1 1 calc(100% - 20px);
+        max-width: 100%;
+    }
+
+    .card img {
+        height: 200px;
+    }
+
+    .card h3 {
+        font-size: 1.5em;
+    }
+
+    .card p {
+        font-size: 1em;
+    }
+
+    .card a {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
 }

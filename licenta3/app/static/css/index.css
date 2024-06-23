@@ -19,17 +19,15 @@ footer {
   margin: auto;
 }
 
-/* Slides */
 .mySlides {
   display: none;
 }
 
 .mySlides img {
   width: 100%;
-  height: auto; /* Asigură-te că imaginile își păstrează proporțiile */
+  height: auto;
 }
 
-/* Next & Previous Buttons */
 .prev, .next {
   cursor: pointer;
   position: absolute;
@@ -86,71 +84,17 @@ a, a:visited, a:hover, a:active {
   to { opacity: 1; }
 }
 
-/* Responsive Styles */
-@media screen and (max-width: 768px) {
-  .mySlides img {
-    width: 100%; /* Asigură-te că imaginile sunt responsive */
-  }
-
-  .prev, .next {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .intro-section {
-    padding: 20px 10px; /* Ajustează padding-ul pentru ecrane mai mici */
-  }
-
-  .intro-section h1 {
-    font-size: 1.5em; /* Ajustează dimensiunea fontului */
-  }
-
-  .intro-section p {
-    font-size: 14px; /* Ajustează dimensiunea fontului */
-  }
-
-  .login-button {
-    padding: 10px 20px; /* Ajustează padding-ul butonului */
-    font-size: 1em; /* Ajustează dimensiunea fontului */
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .prev, .next {
-    font-size: 12px;
-    padding: 10px;
-  }
-
-  .intro-section {
-    padding: 15px 5px; /* Ajustează padding-ul pentru ecrane foarte mici */
-  }
-
-  .intro-section h1 {
-    font-size: 1.2em; /* Ajustează dimensiunea fontului */
-  }
-
-  .intro-section p {
-    font-size: 12px; /* Ajustează dimensiunea fontului */
-  }
-
-  .login-button {
-    padding: 8px 16px; /* Ajustează padding-ul butonului */
-    font-size: 0.9em; /* Ajustează dimensiunea fontului */
-  }
-}
-
-/* Stiluri pentru secțiunea de introducere */
 .intro-section {
-  padding: 20px 10px; /* Redus padding-ul pentru a face secțiunea mai compactă */
+  padding: 20px 10px;
   text-align: center;
   background: #ffffff;
   color: #333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adăugăm o umbră */
-  margin-top: 38px; /* Adaugă margin-top pentru a împinge secțiunea în jos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 38px;
 }
 
 .intro-section h1 {
-  margin-bottom: 10px; /* Redus margin-ul de jos pentru a face secțiunea mai compactă */
+  margin-bottom: 10px;
   color: #5b38be;
 }
 
@@ -161,12 +105,12 @@ h2 {
 .intro-section p {
   font-size: 16px;
   line-height: 1.6;
-  margin-bottom: 10px; /* Redus margin-ul de jos pentru a face secțiunea mai compactă */
+  margin-bottom: 10px;
 }
 
 .login-button {
   display: inline-block;
-  margin: 10px auto; /* Redus margin-ul pentru a face secțiunea mai compactă */
+  margin: 10px auto;
   padding: 10px 20px;
   background: #5b38be;
   color: #fff;
@@ -179,4 +123,56 @@ h2 {
 
 .login-button:hover {
   background: #271759;
+}
+
+@media screen and (max-width: 768px) {
+  .mySlides img {
+    width: 100%;
+  }
+
+  .prev, .next {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .intro-section {
+    padding: 20px 10px;
+  }
+
+  .intro-section h1 {
+    font-size: 1.5em;
+  }
+
+  .intro-section p {
+    font-size: 14px;
+  }
+
+  .login-button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .prev, .next {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .intro-section {
+    padding: 15px 5px;
+  }
+
+  .intro-section h1 {
+    font-size: 1.2em;
+  }
+
+  .intro-section p {
+    font-size: 12px;
+  }
+
+  .login-button {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
 }
