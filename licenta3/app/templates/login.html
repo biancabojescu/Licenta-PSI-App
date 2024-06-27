@@ -8,9 +8,8 @@
     <link rel="stylesheet" type="text/css" href="../static/css/login.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
-   <header>
+    <header>
         <div class="logo">
             <a href="{{ url_for('index') }}">
                 <img src="../static/images/logo.png" alt="HealthShare logo">
@@ -38,37 +37,37 @@
         </nav>
     </header>
     <div class="container">
-    <div class="main">
-  <input type="checkbox" id="chk" aria-hidden="true">
-  <div class="login">
-    <form action="{{ url_for('login_user') }}" method="post">
-    {{ form.hidden_tag() }}
-    <label for="chk" aria-hidden="true">Login</label>
-    {{ form.email(placeholder='Email', required=True) }}
-    {{ form.password(placeholder='Password', required=True, id='password') }}
-    <label class="checkbox-label">
-        Show Password
-        <input type="checkbox" onclick="togglePassword()">
-        <span class="slider"></span>
-    </label>
-    <br>
-    {{ form.submit() }}
-    </form>
+        <div class="main">
+            <input type="checkbox" id="chk" aria-hidden="true">
+            <div class="login">
+                <form action="{{ url_for('login_user') }}" method="post">
+                    {{ form.hidden_tag() }}
+                    <label for="chk" aria-hidden="true">Login</label>
+                    {{ form.email(placeholder='Email', required=True) }}
+                    {{ form.password(placeholder='Password', required=True, id='password') }}
+                    <label class="checkbox-label">
+                        Show Password
+                        <input type="checkbox" onclick="togglePassword()">
+                        <span class="slider"></span>
+                    </label>
+                    <br>
+                    {{ form.submit() }}
+                </form>
+            </div>
+            <div class="signup">
+                <form>
+                    <label for="chk" aria-hidden="true">Sign up</label>
+                    <img src="../static/images/register.png" alt="logo" height="208" width="308">
+                    <a href="{{ url_for('register') }}" class="register-btn">Register</a>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="signup">
-        <form>
-        <label for="chk" aria-hidden="true">Sign up</label>
-        <img src="../static/images/register.png" alt="logo" height="208" width="308">
-        <a href="{{ url_for('register') }}" class="register-btn">Register</a>
-        </form>
-    </div>
-    </div>
-    </div>
-   <footer>
+    <footer>
         <p>Copyright &copy; 2024 BiancaBojescu</p>
     </footer>
 
-<script type="text/javascript" src="../static/javascript/togglePass.js"></script>
-<script type="text/javascript" src="../static/javascript/header_menu.js"></script>
+    <script type="text/javascript" src="../static/javascript/togglePass.js"></script>
+    <script type="text/javascript" src="../static/javascript/header_menu.js"></script>
 </body>
 </html>

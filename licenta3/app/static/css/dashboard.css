@@ -3,11 +3,25 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background: repeating-radial-gradient(#121b2c, #26395d, #271759);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+
 header {
     background-color: #5b38be;
     padding: 20px;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 15px 15px rgba(0,0,0,0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
 }
 
 .logo img {
@@ -20,6 +34,22 @@ header {
     font-size: 24px;
     font-weight: bold;
     vertical-align: middle;
+    margin-left: 10px;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    font-size: 2em;
+    color: #ede7ff;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: #ede7ff;
 }
 
 nav ul {
@@ -27,11 +57,11 @@ nav ul {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    gap: 30px;
 }
 
 nav ul li {
-    margin: 0 15px;
+    list-style: none;
 }
 
 nav ul li a {
@@ -52,6 +82,8 @@ nav ul li a:hover {
     padding: 70px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1 0 auto;
+    box-sizing: border-box;
 }
 
 h1 {
@@ -178,7 +210,35 @@ button[type="submit"]:hover {
 
 @media (max-width: 768px) {
     header {
-        padding: 10px;
+        padding: 10px 20px;
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+        display: none;
+        width: 100%;
+        text-align: center;
+        background: #5b38be;
+        position: absolute;
+        top: 80px;
+        left: 0;
+    }
+
+    nav ul.show-menu {
+        display: flex;
+    }
+
+    nav ul li a {
+        padding: 10px 0;
     }
 
     .container {
@@ -220,6 +280,15 @@ button[type="submit"]:hover {
 @media (max-width: 480px) {
     header {
         padding: 5px;
+    }
+
+    header .logo a img {
+        height: 50px;
+        width: 50px;
+    }
+
+    .logo-text {
+        font-size: 1.2rem;
     }
 
     .container {
