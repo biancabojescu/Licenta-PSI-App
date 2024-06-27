@@ -1,4 +1,3 @@
-/* Common styles */
 * {
     box-sizing: border-box;
 }
@@ -115,8 +114,8 @@ header ul li a:hover::before {
 .container {
     width: 100%;
     margin: auto;
-    padding-bottom: 50px; /* Space for footer */
-    padding-top: 80px; /* Space for header */
+    padding-bottom: 50px;
+    padding-top: 80px;
     flex: 1 0 auto;
     box-sizing: border-box;
 }

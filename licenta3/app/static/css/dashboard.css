@@ -170,7 +170,6 @@ button[type="submit"]:hover {
     background-color: #6d44b8;
 }
 
-/* Responsive Styles */
 @media (max-width: 1024px) {
     .container {
         width: 90%;

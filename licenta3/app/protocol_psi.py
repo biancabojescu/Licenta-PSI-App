@@ -1,7 +1,7 @@
 import time
 from sqlalchemy import text
 from app import db
-from app.criptatre_date import decrypt_data, private_key, public_key
+from app.psi.criptatre_date import decrypt_data, private_key, public_key
 from app.models import Institutie
 
 from app.psi.client import generate_random_numbers, mascare_date, intersection

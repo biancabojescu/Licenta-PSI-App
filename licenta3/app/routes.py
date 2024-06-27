@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, session, flash, request
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app import app, db
-from app.criptatre_date import decrypt_data, private_key, public_key, encrypt_data
+from app.psi.criptatre_date import decrypt_data, private_key, public_key, encrypt_data
 from app.forms import AddPatientForm, UpdatePatientForm
 from app.models import User, Institutie, Pacienti
 

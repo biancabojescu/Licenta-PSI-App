@@ -8,6 +8,8 @@ def decrypt(key, element):
     d, n = key.d, key.n
     return pow(element, d, n)
 '''
+
+
 def decrypt(key, element):
     d, n = key.d, key.n
     p, q = key.p, key.q
